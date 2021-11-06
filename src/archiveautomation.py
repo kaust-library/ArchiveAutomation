@@ -7,6 +7,36 @@ import os
 import sys
 import requests
 
+def get_accession(my_api_conf, my_headers, acc_number):
+    """Return an accession from a query with ArchivEra API."""
+
+    # Create a dictionay bagIt to Archivera
+    BagIt_to_Archivera = {
+        'Source-Organization': 'AU.AUCr.Term',
+        'External-Identifier': 'ACCXAN',
+        'Internal-Sender-Description': 'ACCDES',
+        'Title': 'TI',
+        'Date-Start': 'ACCTIMPD',
+        'Record-Creators': 'ACCBYP.BYPA.NAMESTRANS',
+        'Record-Type': 'RTYPE.CodeDesc'
+    }
+    
+    # URL for the API.
+    database = 'final'
+    template = 'ACC'
+    acc_url = f"{my_api_conf['url']}/_rest/databases/{database}/templates/{template}/search-result"
+
+    # Dictionay for querying for accession ('ACC')
+    dt_acc = {}
+    dt_acc['command'] = f"ACCXAN=='{acc_number}'"
+    dt_acc['fields'] = ",".join([vv for vv in BagIt_to_Archivera.values()])
+    dt_acc['page'] = 0
+    dt_acc['page-size'] = 10
+
+    my_accession = requests.get(acc_url, headers=my_headers, params=dt_acc)
+
+    return my_accession.json()
+
 def get_token(api_conf, api_headers):
     """Get the API access token from the 'api_conf' 'api_headers' dictionaries."""
     my_token = ""
@@ -83,11 +113,13 @@ if __name__ == "__main__":
     else:
         my_headers['authorization'] = 'Bearer ' + my_token
 
-    print(f"my token is {my_token}")
+    # print(f"my token is {my_token}")
 
-    # Read accession number (accNum)
+    # Read accession by accession number (ACCXAN)
+    acc_number = '013_001_0003'
+    my_accession = get_accession(my_api_conf, my_headers, acc_number)
 
-    # Query the collection with accNum
-
+    print(my_accession)
+    
     # Create BagIt file
 
