@@ -29,6 +29,8 @@ mgarcia@mordor:~/Documents/Work/ArchiveAutomation$ . venv/bin/activate
 The API password is read from environment variable. So first set it (for example)
 
 ```
+# Windows
 (venv) PS C:\Users\garcm0b\OneDrive - KAUST\Documents\Work\ArchiveAutomation\src> $ENV:ARCHIVERA_API_PW='hello_mg'
+# Linux
 (venv) mgarcia@mordor:~/Documents/Work/ArchiveAutomation/src$ export ARCHIVERA_API_PW="hello"
 ```
