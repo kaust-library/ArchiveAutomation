@@ -24,6 +24,13 @@ mgarcia@mordor:~/Documents/Work/ArchiveAutomation$ . venv/bin/activate
 (venv) mgarcia@mordor:~/Documents/Work/ArchiveAutomation$ pip install requests
 ```
 
+Creating the `requirements.txt` file with the modules used
+
+```
+pip freeze > requirements.txt
+```
+
+
 ## ArchivEra API Password
 
 The API password is read from environment variable. So first set it (for example)
