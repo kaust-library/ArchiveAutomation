@@ -93,6 +93,12 @@ def get_api_passwd():
 
 if __name__ == "__main__":
     #
+    # Read the accession number that will be retrieved from ArchivEra.
+    acc_number = sys.argv[1]
+    # Read path to files (directory)
+    bag_path = pathlib.Path(sys.argv[2])
+
+    #
     # Define a dictionary with details of the API.
     my_api_conf = get_api_conf()
 
@@ -129,17 +135,15 @@ if __name__ == "__main__":
 	}
 
     # Read accession by accession number (ACCXAN)
-    acc_number = '013_001_0003'
+    #acc_number = '013_001_0003'
     dt_acc = {}
     dt_acc['command'] = f"ACCXAN=='{acc_number}'"
     dt_acc['fields'] = ",".join([kk for kk in BagIt_to_Archivera.keys()])
 
     my_accession = get_accession(my_api_conf, my_headers, dt_acc)
 
-    #print(my_accession)
-
     # Create BagIt file
-    bag_path = pathlib.Path(r'C:\Users\garcm0b\OneDrive - KAUST\Documents\Work\my_bag1')
     my_bag = archivera_to_bagit(BagIt_to_Archivera, my_accession, bag_path)
 
-
+    # The End
+    print('Have a nice day.')
