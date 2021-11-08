@@ -7,29 +7,18 @@ import os
 import sys
 import requests
 
-def get_accession(my_api_conf, my_headers, acc_number):
+def archivera_to_bagit(BagIt_to_Archivera, my_accession):
+    """Convert an accession from Archivera to a bag-info file"""
+
+def get_accession(my_api_conf, my_headers, dt_acc):
     """Return an accession from a query with ArchivEra API."""
 
-    # Create a dictionay bagIt to Archivera
-    BagIt_to_Archivera = {
-        'Source-Organization': 'AU.AUCr.Term',
-        'External-Identifier': 'ACCXAN',
-        'Internal-Sender-Description': 'ACCDES',
-        'Title': 'TI',
-        'Date-Start': 'ACCTIMPD',
-        'Record-Creators': 'ACCBYP.BYPA.NAMESTRANS',
-        'Record-Type': 'RTYPE.CodeDesc'
-    }
-    
     # URL for the API.
     database = 'final'
     template = 'ACC'
     acc_url = f"{my_api_conf['url']}/_rest/databases/{database}/templates/{template}/search-result"
 
     # Dictionay for querying for accession ('ACC')
-    dt_acc = {}
-    dt_acc['command'] = f"ACCXAN=='{acc_number}'"
-    dt_acc['fields'] = ",".join([vv for vv in BagIt_to_Archivera.values()])
     dt_acc['page'] = 0
     dt_acc['page-size'] = 10
 
@@ -115,11 +104,28 @@ if __name__ == "__main__":
 
     # print(f"my token is {my_token}")
 
+    # Create a dictionay bagIt to Archivera
+    BagIt_to_Archivera = {
+        'Source-Organization': 'AU.AUCr.Term',
+        'External-Identifier': 'ACCXAN',
+        'Internal-Sender-Description': 'ACCDES',
+        'Title': 'TI',
+        'Date-Start': 'ACCTIMPD',
+        'Record-Creators': 'ACCBYP.BYPA.NAMESTRANS',
+        'Record-Type': 'RTYPE.CodeDesc'
+    }
+    
     # Read accession by accession number (ACCXAN)
     acc_number = '013_001_0003'
-    my_accession = get_accession(my_api_conf, my_headers, acc_number)
+    dt_acc = {}
+    dt_acc['command'] = f"ACCXAN=='{acc_number}'"
+    dt_acc['fields'] = ",".join([vv for vv in BagIt_to_Archivera.values()])
+
+    my_accession = get_accession(my_api_conf, my_headers, dt_acc)
 
     print(my_accession)
     
+    my_bag = archivera_to_bagit(BagIt_to_Archivera, my_accession)
+
     # Create BagIt file
 
