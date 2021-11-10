@@ -131,8 +131,8 @@ if __name__ == "__main__":
         'TI': 'Title',
         'ACCTIMPD': 'Date-Start',
         'ACCBYP.BYPA.NAMESTRANS':'Record-Creators',
-		'RTYPE.CodeDesc': 'Record-Type'
-	}
+        'RTYPE.CodeDesc': 'Record-Type'
+    }
 
     # Read accession by accession number (ACCXAN)
     #acc_number = '013_001_0003'
