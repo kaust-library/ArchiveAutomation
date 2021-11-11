@@ -13,9 +13,11 @@ from datetime import datetime
 def archivera_to_bagit(BagIt_to_Archivera, my_accession, bag_path):
     """Convert an accession from Archivera to a bag-info file"""
 
+    # HACK: I think this block is missing checking for exception...
     # Create a simple BagIt file, and initialize the bag info with creation of the bag.
     my_bag = bagit.make_bag(bag_path, {'Bagging-Date': datetime.now().isoformat()})
 
+    # HACK #2. Probably this part also need to for exception.
     # Update BagIt metadata
     for kk in BagIt_to_Archivera.keys():
         my_bag.info[BagIt_to_Archivera[kk]] = my_accession['records'][0][kk][0]['display']
@@ -40,7 +42,7 @@ def get_accession(my_api_conf, my_headers, dt_acc):
     return my_accession.json()
 
 def get_token(api_conf, api_headers):
-    """Get the API access token from the 'api_conf' 'api_headers' dictionaries."""
+    """Get the API access token from the 'api_conf' and 'api_headers' dictionaries."""
     my_token = ""
     path_token = '/_oauth/token'
 
@@ -68,6 +70,8 @@ def get_api_headers():
 
 def get_api_conf():
     """Get API configuration details, and return a dictionary."""
+
+    # TODO: move the configuration to a file so the end user can edit it.
     my_conf = {}
     my_conf['url'] = 'https://7050.sydneyplus.com/public'
     my_conf['client_id'] = 'apitest'
@@ -93,6 +97,7 @@ def get_api_passwd():
 
 if __name__ == "__main__":
     #
+    # TODO: Better handling of parameters, like checking if path exists, etc.
     # Read the accession number that will be retrieved from ArchivEra.
     acc_number = sys.argv[1]
     # Read path to files (directory)
