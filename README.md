@@ -2,6 +2,12 @@
 
 Automate digital archival preservation
 
+TODO:
+
+- [ ] Print all authors (see `ACCXAN == '013_002_0013'`)
+- [ ] Save in DC XML format with name `bag-info.xml`
+- [ ] Add fields `sublc.term`, and `offln.term` to the API query
+
 ## Virtual Environment and Dependencies
 
 Create a virtual environment for the project
