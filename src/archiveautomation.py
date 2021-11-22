@@ -11,7 +11,7 @@ import pathlib
 from datetime import datetime
 
 def archivera_to_bagit(BagIt_to_Archivera, my_accession, bag_path):
-    """Convert an accession from Archivera to a bag-info file"""
+    """Create a BagIt file from an ArchivEra accession"""
 
     # HACK: I think this block is missing checking for exception...
     # Create a simple BagIt file, and initialize the bag info with creation of the bag.
