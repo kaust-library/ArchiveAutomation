@@ -85,9 +85,12 @@ def get_api_conf(my_config):
             'database': api_config['API']['database']
         }
     except KeyError as ke:
-        print('Error reading API config')
+        print('Key error reading API config')
         print(ke)
         my_conf = {}
+    except:
+        print("Error reading API config file.")
+        my_conf = {}        
     return my_conf
 
 def get_api_passwd():
