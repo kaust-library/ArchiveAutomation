@@ -70,17 +70,24 @@ def get_api_headers():
 
     return my_headers
 
-def get_api_conf():
+def get_api_conf(my_config):
     """Get API configuration details, and return a dictionary."""
 
-    # TODO: move the configuration to a file so the end user can edit it.
-    my_conf = {}
-    my_conf['url'] = 'https://7050.sydneyplus.com/public'
-    my_conf['client_id'] = 'apitest'
-    my_conf['grant_type'] = 'password'
-    my_conf['username'] = 'APIUser'
-    my_conf['database'] = 'final'
+    api_config = configparser.ConfigParser()
+    api_config.read(my_config)
+    try:
 
+        my_conf = { 
+            'url': api_config['API']['url'],
+            'client_id': api_config['API']['client_id'],
+            'grant_type': api_config['API']['grant_type'],
+            'username': api_config['API']['username'],
+            'database': api_config['API']['database']
+        }
+    except KeyError as ke:
+        print('Error reading API config')
+        print(ke)
+        my_conf = {}
     return my_conf
 
 def get_api_passwd():
@@ -105,10 +112,14 @@ if __name__ == "__main__":
     # Read path to files (directory)
     bag_path = pathlib.Path(sys.argv[2])
 
-    my_config = pathlib.Path('')
     #
     # Define a dictionary with details of the API.
-    my_api_conf = get_api_conf()
+    my_config = pathlib.Path('etc/archiveautomation.cfg')
+    my_api_conf = get_api_conf(my_config)
+
+    if not my_api_conf:
+        print("Not API configuration. Check congfig file. Exiting...")
+        sys.exit(1)
 
     # Define the headers for the API requests
     my_headers = get_api_headers()
