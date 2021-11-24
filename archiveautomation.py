@@ -9,10 +9,27 @@ import requests
 import bagit
 import pathlib
 import configparser
-
 from datetime import datetime
 
-def archivera_to_bagit(BagIt_to_Archivera, my_accession, bag_path):
+def get_archivera_bagit():
+    """Return a dictionary Archivera to BagIt"""
+
+    Archivera_BagIt = {
+        'AU.AUCr.Term': 'Source-Organization',
+        'ACCXAN': 'External-Identifier',
+        'ACCDES': 'Internal-Sender-Description',
+        'TI': 'Title',
+        'ACCTIMPD': 'Date-Start',
+        'ACCBYP.BYPA.NAMESTRANS':'Record-Creators',
+        'RTYPE.CodeDesc': 'Record-Type',
+        'EXTT': 'Extend-Size',
+        'sublc.term': 'Subjects',
+        'offln.term': 'Office'
+    }
+
+    return Archivera_BagIt
+
+def archivera_to_bagit(Archivera_BagIt, my_accession, bag_path):
     """Create a BagIt file from an ArchivEra accession"""
 
     # HACK: I think this block is missing checking for exception...
@@ -21,14 +38,14 @@ def archivera_to_bagit(BagIt_to_Archivera, my_accession, bag_path):
 
     # HACK #2. Probably this part also need to for exception.
     # Update BagIt metadata
-    for kk in BagIt_to_Archivera.keys():
+    for kk in Archivera_BagIt.keys():
         items_display = len(my_accession['records'][0][kk])
         if items_display > 1:
-            my_bag.info[BagIt_to_Archivera[kk]] = ", ".join(
+            my_bag.info[Archivera_BagIt[kk]] = ", ".join(
                 [my_accession['records'][0][kk][vv]['display'] for vv in range(items_display)]
             )    
         else:
-            my_bag.info[BagIt_to_Archivera[kk]] = my_accession['records'][0][kk][0]['display']
+            my_bag.info[Archivera_BagIt[kk]] = my_accession['records'][0][kk][0]['display']
     my_bag.save()
 
     return ""
@@ -153,29 +170,18 @@ if __name__ == "__main__":
     # print(f"my token is {my_token}")
 
     # Create a dictionay bagIt to Archivera
-    BagIt_to_Archivera = {
-        'AU.AUCr.Term': 'Source-Organization',
-        'ACCXAN': 'External-Identifier',
-        'ACCDES': 'Internal-Sender-Description',
-        'TI': 'Title',
-        'ACCTIMPD': 'Date-Start',
-        'ACCBYP.BYPA.NAMESTRANS':'Record-Creators',
-        'RTYPE.CodeDesc': 'Record-Type',
-        'EXTT': 'Extend-Size',
-        'sublc.term': 'Subjects',
-        'offln.term': 'Office'
-    }
-
+    Archivera_BagIt = get_archivera_bagit()
+    
     # Read accession by accession number (ACCXAN)
     #acc_number = '013_001_0003'
     dt_acc = {}
     dt_acc['command'] = f"ACCXAN=='{acc_number}'"
-    dt_acc['fields'] = ",".join([kk for kk in BagIt_to_Archivera.keys()])
+    dt_acc['fields'] = ",".join([kk for kk in Archivera_BagIt.keys()])
 
     my_accession = get_accession(my_api_conf, my_headers, dt_acc)
 
     # Create BagIt file
-    my_bag = archivera_to_bagit(BagIt_to_Archivera, my_accession, bag_path)
+    my_bag = archivera_to_bagit(Archivera_BagIt, my_accession, bag_path)
 
     # The End
     print('Have a nice day.')
