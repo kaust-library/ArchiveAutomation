@@ -9,7 +9,27 @@ import requests
 import bagit
 import pathlib
 import configparser
+import xml.etree.ElementTree as ET
 from datetime import datetime
+
+def get_archivera_dc():
+    """Return a dictionary Archivera to DC"""
+
+    Archivera_DC = {
+        'AU.AUCr.Term': 'source',
+        'ACCXAN': 'identifier',
+        'ACCDES': 'description',
+        'TI': 'title',
+        'ACCTIMPD': 'date',
+        'ACCBYP.BYPA.NAMESTRANS':'creator',
+        'RTYPE.CodeDesc': 'type',
+        'EXTT': 'format',
+        'sublc.term': 'subject',
+        'offln.term': 'publisher'
+    }
+
+    return Archivera_DC
+
 
 def get_archivera_bagit():
     """Return a dictionary Archivera to BagIt"""
@@ -171,7 +191,7 @@ if __name__ == "__main__":
 
     # Create a dictionay bagIt to Archivera
     Archivera_BagIt = get_archivera_bagit()
-    
+
     # Read accession by accession number (ACCXAN)
     #acc_number = '013_001_0003'
     dt_acc = {}
@@ -182,6 +202,10 @@ if __name__ == "__main__":
 
     # Create BagIt file
     my_bag = archivera_to_bagit(Archivera_BagIt, my_accession, bag_path)
+
+    # Save to accession in DC format
+    Archivera_DC = get_archivera_dc()
+    
 
     # The End
     print('Have a nice day.')
