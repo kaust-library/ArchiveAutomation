@@ -58,7 +58,7 @@ The API password is read from environment variable. So first set it (for example
 The takes 2 arguments: the accession number (ACCXAN), and the path to the files
 
 ```
-(venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$ python ./src/archiveautomation.py 013_002_0026 /home/mgarcia/Documents/my_bag
+(venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$ python archiveautomation.py 013_002_0026 /home/mgarcia/Documents/my_bag
 Have a nice day.
 (venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$
 ```

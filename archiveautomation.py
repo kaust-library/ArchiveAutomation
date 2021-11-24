@@ -22,7 +22,13 @@ def archivera_to_bagit(BagIt_to_Archivera, my_accession, bag_path):
     # HACK #2. Probably this part also need to for exception.
     # Update BagIt metadata
     for kk in BagIt_to_Archivera.keys():
-        my_bag.info[BagIt_to_Archivera[kk]] = my_accession['records'][0][kk][0]['display']
+        items_display = len(my_accession['records'][0][kk])
+        if items_display > 1:
+            my_bag.info[BagIt_to_Archivera[kk]] = ", ".join(
+                [my_accession['records'][0][kk][vv]['display'] for vv in range(items_display)]
+            )    
+        else:
+            my_bag.info[BagIt_to_Archivera[kk]] = my_accession['records'][0][kk][0]['display']
     my_bag.save()
 
     return ""
@@ -117,6 +123,7 @@ if __name__ == "__main__":
 
     #
     # Define a dictionary with details of the API.
+    # TODO: Config file can be defined as command line argument.
     my_config = pathlib.Path('etc/archiveautomation.cfg')
     my_api_conf = get_api_conf(my_config)
 
@@ -153,7 +160,10 @@ if __name__ == "__main__":
         'TI': 'Title',
         'ACCTIMPD': 'Date-Start',
         'ACCBYP.BYPA.NAMESTRANS':'Record-Creators',
-        'RTYPE.CodeDesc': 'Record-Type'
+        'RTYPE.CodeDesc': 'Record-Type',
+        'EXTT': 'Extend-Size',
+        'sublc.term': 'Subjects',
+        'offln.term': 'Office'
     }
 
     # Read accession by accession number (ACCXAN)
