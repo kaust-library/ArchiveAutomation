@@ -46,13 +46,21 @@ In case of a _new_ environment, you can install the requirements by reading the 
 
 ## ArchivEra API Password
 
-The API password is read from environment variable. So first set it (for example)
+The API password is handled in 2 ways: declaring it as an environment variable, or via `.env` file. For first case, set password according to your operating system:
 
 ```
 # Windows
 (venv) PS C:\Users\garcm0b\OneDrive - KAUST\Documents\Work\ArchiveAutomation\src> $ENV:ARCHIVERA_API_PW='hello_mg'
 # Linux
 (venv) mgarcia@mordor:~/Documents/Work/ArchiveAutomation/src$ export ARCHIVERA_API_PW="hello"
+```
+
+The second way of using the [password is via a `.env`](https://yuthakarn.medium.com/how-to-not-show-credential-in-jupyter-notebook-c349f9278466) in the same directory as the main program. The file is a simple `key=value` pair:
+
+```
+(venv) PS C:\Users\garcm0b\Work\ArchiveAutomation> cat .env
+ARCHIVERA_API_PW='hello_world'
+(venv) PS C:\Users\garcm0b\Work\ArchiveAutomation>
 ```
 
 ## Running the Script
