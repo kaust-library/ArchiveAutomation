@@ -91,8 +91,6 @@ def archivera_to_dc(Archivera_DC, my_accession, bag_path):
     print("DC dict:")
     print(dc_data)
     dc_xml = simpledc.tostring(dc_data)
-    for ll in dc_xml.splitlines()[2:-1]:
-        print(ll)
     dc_file = f"{bag_path}/bag-info.xml"
     with open(dc_file, 'w') as ff_dc:
         ff_dc.write(dc_xml)
