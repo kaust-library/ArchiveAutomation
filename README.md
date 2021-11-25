@@ -2,6 +2,14 @@
 
 Automate digital archival preservation
 
+## Clone the repository
+
+Clone the repository 
+
+```
+PS C:\Users\garcm0b\Work> git clone https://github.com/kaust-library/ArchiveAutomation.git
+```
+
 ## Virtual Environment and Dependencies
 
 Create a virtual environment for the project
