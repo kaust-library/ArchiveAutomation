@@ -9,24 +9,24 @@ import requests
 import bagit
 import pathlib
 import configparser
-import xml.etree.ElementTree as ET
 from datetime import datetime
 from dotenv import load_dotenv
+from dcxml import simpledc
 
 def get_archivera_dc():
     """Return a dictionary Archivera to DC"""
 
     Archivera_DC = {
-        'AU.AUCr.Term': 'source',
-        'ACCXAN': 'identifier',
-        'ACCDES': 'description',
-        'TI': 'title',
-        'ACCTIMPD': 'date',
-        'ACCBYP.BYPA.NAMESTRANS':'creator',
-        'RTYPE.CodeDesc': 'type',
-        'EXTT': 'format',
-        'sublc.term': 'subject',
-        'offln.term': 'publisher'
+        'AU.AUCr.Term': 'sources',
+        'ACCXAN': 'identifiers',
+        'ACCDES': 'descriptions',
+        'TI': 'titles',
+        'ACCTIMPD': 'dates',
+        'ACCBYP.BYPA.NAMESTRANS':'creators',
+        'RTYPE.CodeDesc': 'types',
+        'EXTT': 'formats',
+        'sublc.term': 'subjects',
+        'offln.term': 'publishers'
     }
 
     return Archivera_DC
@@ -70,6 +70,33 @@ def archivera_to_bagit(Archivera_BagIt, my_accession, bag_path):
     my_bag.save()
 
     return ""
+
+def archivera_to_dc(Archivera_DC, my_accession, bag_path):
+    """Create an XML with data from the accession
+    Archivera_DC: dictionary ArchivEra to DC fields
+    my_accession: accession details
+    bag_path: path where to save the XML file (it's the same path as the BagIt file.)
+    """
+
+    dc_data = {}
+    for kk in Archivera_DC.keys():
+        items_display = len(my_accession['records'][0][kk])
+        if items_display > 1:
+            dc_data[Archivera_DC[kk]] = [", ".join(
+                [my_accession['records'][0][kk][vv]['display'] for vv in range(items_display)]
+            )]    
+        else:
+            dc_data[Archivera_DC[kk]] = [my_accession['records'][0][kk][0]['display']]
+
+    print("DC dict:")
+    print(dc_data)
+    dc_xml = simpledc.tostring(dc_data)
+    for ll in dc_xml.splitlines()[2:-1]:
+        print(ll)
+    dc_file = f"{bag_path}/bag-info.xml"
+    with open(dc_file, 'w') as ff_dc:
+        ff_dc.write(dc_xml)
+
 
 def get_accession(my_api_conf, my_headers, dt_acc):
     """Return an accession from a query with ArchivEra API."""
@@ -159,6 +186,9 @@ if __name__ == "__main__":
     # Read path to files (directory)
     bag_path = pathlib.Path(sys.argv[2])
 
+    # load environment variables for 'python-dotenv
+    load_dotenv()
+
     #
     # Define a dictionary with details of the API.
     # TODO: Config file can be defined as command line argument.
@@ -206,6 +236,8 @@ if __name__ == "__main__":
 
     # Save to accession in DC format
     Archivera_DC = get_archivera_dc()
+
+    archivera_to_dc(Archivera_DC, my_accession, bag_path)
 
     # The End
     print('Have a nice day.')
