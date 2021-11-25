@@ -206,7 +206,6 @@ if __name__ == "__main__":
 
     # Save to accession in DC format
     Archivera_DC = get_archivera_dc()
-    
 
     # The End
     print('Have a nice day.')
