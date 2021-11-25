@@ -44,6 +44,10 @@ In case of a _new_ environment, you can install the requirements by reading the 
 (venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$ pip install -r requirements.txt
 ```
 
+## Configuration File
+
+The configuration details for the script are in the file `etc/archiveautomation.cfg.` When cloning the environment, the configuration file will be just a reminder (with an `example` extension) that it needs to be edited with the correct values, and save it as `archiveautomation.cfg.`
+
 ## ArchivEra API Password
 
 The API password is handled in 2 ways: declaring it as an environment variable, or via `.env` file. For first case, set password according to your operating system:
