@@ -72,7 +72,7 @@ def archivera_to_bagit(Archivera_BagIt, my_accession, bag_path):
     return ""
 
 def archivera_to_dc(Archivera_DC, my_accession, bag_path):
-    """Create an XML with data from the accession
+    """Returns a string with the XML of the accession
     Archivera_DC: dictionary ArchivEra to DC fields
     my_accession: accession details
     bag_path: path where to save the XML file (it's the same path as the BagIt file.)
@@ -88,12 +88,9 @@ def archivera_to_dc(Archivera_DC, my_accession, bag_path):
         else:
             dc_data[Archivera_DC[kk]] = [my_accession['records'][0][kk][0]['display']]
 
-    print("DC dict:")
-    print(dc_data)
     dc_xml = simpledc.tostring(dc_data)
-    dc_file = f"{bag_path}/bag-info.xml"
-    with open(dc_file, 'w') as ff_dc:
-        ff_dc.write(dc_xml)
+
+    return dc_xml
 
 
 def get_accession(my_api_conf, my_headers, dt_acc):
@@ -235,7 +232,12 @@ if __name__ == "__main__":
     # Save to accession in DC format
     Archivera_DC = get_archivera_dc()
 
-    archivera_to_dc(Archivera_DC, my_accession, bag_path)
+    dc_text = archivera_to_dc(Archivera_DC, my_accession, bag_path)
+
+    dc_file = f"{bag_path}/bag-info.xml"
+    
+    with open(dc_file, 'w') as ff_dc:
+        ff_dc.write(dc_text)
 
     # The End
     print('Have a nice day.')
