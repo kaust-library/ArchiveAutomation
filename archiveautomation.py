@@ -11,6 +11,7 @@ import pathlib
 import configparser
 import xml.etree.ElementTree as ET
 from datetime import datetime
+from dotenv import load_dotenv
 
 def get_archivera_dc():
     """Return a dictionary Archivera to DC"""
