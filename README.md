@@ -35,7 +35,7 @@ mgarcia@mordor:~/Documents/Work/ArchiveAutomation$ . venv/bin/activate
 Creating the `requirements.txt` file with the modules used
 
 ```
-pip freeze > requirements.txt
+(venv) PS C:\Users\garcm0b\Work\ArchiveAutomation> pip freeze > requirements.txt
 ```
 
 In case of a _new_ environment, you can install the requirements by reading the file
