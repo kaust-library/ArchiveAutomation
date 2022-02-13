@@ -64,7 +64,7 @@ def archivera_to_bagit(Archivera_BagIt, my_accession, bag_path):
         if items_display > 1:
             my_bag.info[Archivera_BagIt[kk]] = ", ".join(
                 [my_accession['records'][0][kk][vv]['display'] for vv in range(items_display)]
-            )    
+            )
         else:
             my_bag.info[Archivera_BagIt[kk]] = my_accession['records'][0][kk][0]['display']
     my_bag.save()
@@ -84,7 +84,7 @@ def archivera_to_dc(Archivera_DC, my_accession, bag_path):
         if items_display > 1:
             dc_data[Archivera_DC[kk]] = [", ".join(
                 [my_accession['records'][0][kk][vv]['display'] for vv in range(items_display)]
-            )]    
+            )]
         else:
             dc_data[Archivera_DC[kk]] = [my_accession['records'][0][kk][0]['display']]
 
@@ -114,7 +114,7 @@ def get_token(api_conf, api_headers):
     my_token = ""
     path_token = '/_oauth/token'
 
-    rr = requests.post(api_conf['url'] + path_token, headers=api_headers, 
+    rr = requests.post(api_conf['url'] + path_token, headers=api_headers,
         data=api_conf).json()
 
     try:
@@ -125,7 +125,7 @@ def get_token(api_conf, api_headers):
     except:
         print("Something went wrong getting the token...")
         my_token = ""
-    
+
     return my_token
 
 def get_api_headers():
@@ -143,7 +143,7 @@ def get_api_conf(my_config):
     api_config.read(my_config)
     try:
 
-        my_conf = { 
+        my_conf = {
             'url': api_config['API']['url'],
             'client_id': api_config['API']['client_id'],
             'grant_type': api_config['API']['grant_type'],
@@ -156,7 +156,7 @@ def get_api_conf(my_config):
         my_conf = {}
     except:
         print("Error reading API config file.")
-        my_conf = {}        
+        my_conf = {}
     return my_conf
 
 def get_api_passwd():
@@ -178,8 +178,17 @@ if __name__ == "__main__":
     # TODO: Better handling of parameters, like checking if path exists, etc.
     # Read the accession number that will be retrieved from ArchivEra.
     acc_number = sys.argv[1]
-    # Read path to files (directory)
-    bag_path = pathlib.Path(sys.argv[2])
+    # Read source directory with files to be archived.
+    src_path = pathlib.Path(sys.argv[2])
+    # Read path to BagIt (destination) directory.
+    bag_path = pathlib.Path(sys.argv[3])
+
+    #
+    # Copy the files (tres) from source directory to destination where will be
+    # the bag file.
+    print("Copying files from {src_path} to {bag_path}...")
+    shutil.copytress(src_path, bag_path)
+    print("done.")
 
     # load environment variables for 'python-dotenv
     load_dotenv()
@@ -235,7 +244,7 @@ if __name__ == "__main__":
     dc_text = archivera_to_dc(Archivera_DC, my_accession, bag_path)
 
     dc_file = f"{bag_path}/bag-info.xml"
-    
+
     with open(dc_file, 'w') as ff_dc:
         ff_dc.write(dc_text)
 
