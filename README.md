@@ -4,7 +4,7 @@ Automate digital archival preservation
 
 ## Clone the repository
 
-Clone the repository 
+Clone the repository
 
 ```
 PS C:\Users\garcm0b\Work> git clone https://github.com/kaust-library/ArchiveAutomation.git
@@ -69,11 +69,10 @@ ARCHIVERA_API_PW='hello_world'
 
 ## Running the Script
 
-The takes 2 arguments: the accession number (ACCXAN), and the path to the files
+The takes 3 arguments: an accession number (ACCXAN), a path to where are the files, and a path to where the BagIt file will be created:
 
 ```
-(venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$ python archiveautomation.py 013_002_0026 /home/mgarcia/Documents/my_bag
+(venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$ python archiveautomation.py 013_002_0026 /home/mgarcia/Documents/boat_trip_pictures /home/mgarcia/Documents/my_bag
 Have a nice day.
 (venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$
 ```
-
