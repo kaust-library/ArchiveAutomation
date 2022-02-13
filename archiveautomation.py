@@ -187,10 +187,14 @@ if __name__ == "__main__":
     #
     # Copy the files (tres) from source directory to destination where will be
     # the bag file.
-    print(f"Copying files from {src_path} to {bag_path}...")
-    shutil.copytree(src_path, bag_path)
-    print("done.")
-
+    try:
+        print(f"Copying files from '{src_path}' to '{bag_path}'...")
+        shutil.copytree(src_path, bag_path)
+        print("done.")
+    except shutil.Error:
+        print("Error copying files. Aborting script.")
+        sys.exit(1)
+        
     # load environment variables for 'python-dotenv
     load_dotenv()
 
