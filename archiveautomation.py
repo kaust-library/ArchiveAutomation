@@ -8,6 +8,7 @@ import sys
 import requests
 import bagit
 import pathlib
+import shutil
 import configparser
 from datetime import datetime
 from dotenv import load_dotenv
@@ -186,8 +187,8 @@ if __name__ == "__main__":
     #
     # Copy the files (tres) from source directory to destination where will be
     # the bag file.
-    print("Copying files from {src_path} to {bag_path}...")
-    shutil.copytress(src_path, bag_path)
+    print(f"Copying files from {src_path} to {bag_path}...")
+    shutil.copytree(src_path, bag_path)
     print("done.")
 
     # load environment variables for 'python-dotenv
