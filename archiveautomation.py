@@ -191,10 +191,13 @@ if __name__ == "__main__":
         print(f"Copying files from '{src_path}' to '{bag_path}'...")
         shutil.copytree(src_path, bag_path)
         print("done.")
-    except shutil.Error:
-        print("Error copying files. Aborting script.")
+    except FileExistsError:
+        print(f"\nError: Destination folder '{bag_path}' already exists. Remove the folder first. \nBye for now.")
         sys.exit(1)
-        
+    except Exception as ee:
+        print(f"\nError {ee} while copying files. Aborting the script.")
+        sys.exit(1)
+
     # load environment variables for 'python-dotenv
     load_dotenv()
 
