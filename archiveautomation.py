@@ -79,6 +79,11 @@ def archivera_to_dc(Archivera_DC, my_accession, bag_path):
     bag_path: path where to save the XML file (it's the same path as the BagIt file.)
     """
 
+    # Add the following fields to dictionay, so we have a record compatible
+    # with DC core.
+    # "contributors, coverage, languages, relations, rights"
+    #
+
     dc_data = {}
     for kk in Archivera_DC.keys():
         items_display = len(my_accession['records'][0][kk])
@@ -255,6 +260,9 @@ if __name__ == "__main__":
 
     with open(dc_file, 'w') as ff_dc:
         ff_dc.write(dc_text)
+
+    # Rename directory with os.rename
+
 
     # The End
     print('Have a nice day.')
