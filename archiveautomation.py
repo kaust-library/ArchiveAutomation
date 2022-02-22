@@ -84,7 +84,13 @@ def archivera_to_dc(Archivera_DC, my_accession, bag_path):
     # "contributors, coverage, languages, relations, rights"
     #
 
+    dc_extra = ['contributors', 'coverage', 'languages', 'relations', 'rights']
+
     dc_data = {}
+
+    for kk in dc_extra:
+        dc_data[kk] = ''
+        
     for kk in Archivera_DC.keys():
         items_display = len(my_accession['records'][0][kk])
         if items_display > 1:
