@@ -17,6 +17,8 @@ from dcxml import simpledc
 def get_archivera_dc():
     """Return a dictionary Archivera to DC"""
 
+    #dc_extra = ['contributors', 'coverage', 'languages', 'relations', 'rights']
+
     Archivera_DC = {
         'AU.AUCr.Term': 'sources',
         'ACCXAN': 'identifiers',
@@ -88,9 +90,11 @@ def archivera_to_dc(Archivera_DC, my_accession, bag_path):
 
     dc_data = {}
 
+    # To make record DC-core complaint, create missing fields from ArchivEra 
+    # with a generic text.
     for kk in dc_extra:
-        dc_data[kk] = ''
-        
+        dc_data[kk] = ['Contact KAUST']
+    
     for kk in Archivera_DC.keys():
         items_display = len(my_accession['records'][0][kk])
         if items_display > 1:
