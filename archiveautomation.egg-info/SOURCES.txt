@@ -1,0 +1,10 @@
+LICENSE
+README.md
+archiveautomation.py
+setup.py
+archiveautomation.egg-info/PKG-INFO
+archiveautomation.egg-info/SOURCES.txt
+archiveautomation.egg-info/dependency_links.txt
+archiveautomation.egg-info/entry_points.txt
+archiveautomation.egg-info/requires.txt
+archiveautomation.egg-info/top_level.txt
