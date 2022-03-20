@@ -10,42 +10,43 @@ import pathlib
 import shutil
 import configparser
 import aalib
+import click
 from datetime import datetime
 from dotenv import load_dotenv
 from dcxml import simpledc
 
-if __name__ == "__main__":
-    #
-    # TODO: Better handling of parameters, like checking if path exists, etc.
-    # Read the accession number that will be retrieved from ArchivEra.
-    acc_number = sys.argv[1]
-    # Read source directory with files to be archived.
-    src_path = pathlib.Path(sys.argv[2])
-    # Read path to BagIt (destination) directory.
-    bag_path = pathlib.Path(sys.argv[3])
+@click.command()
+@click.argument('input', type=click.File('r'))
+def aaflow(input):
+
+    config = configparser.ConfigParser()
+    config._interpolation = configparser.ExtendedInterpolation()
+    config.read(input.name)
+
+    # Adding variables to the antivirus section so we have everything 
+    # we need in a single place before calling the function.
+    config['CLAMAV'].update({'av_location': config['BAGGER']['source_dir']})
+    config['CLAMAV'].update({'av_accession': config['ACCESSION']['accession_id']})
+    aalib.av_run(config['CLAMAV'])
+
+    source_list = [ii.strip() for ii in config['BAGGER']['source_dir'].split(',')]
 
     #
-    # Copy the files (tres) from source directory to destination where will be
-    # the bag file.
-    try:
-        print(f"Copying files from '{src_path}' to '{bag_path}'...")
-        shutil.copytree(src_path, bag_path)
-        print("done.")
-    except FileExistsError:
-        print(f"\nError: Destination folder '{bag_path}' already exists. Remove the folder first. \nBye for now.")
-        sys.exit(1)
-    except Exception as ee:
-        print(f"\nError {ee} while copying files. Aborting the script.")
-        sys.exit(1)
+    # Define variables for convinience only.
+    #
+    acc_number = config['ACCESSION']['accession_id']
+    bag_path = config['BAGGER']['dest_dir']
+
+    # Copy source folder(s) to destination (BagIt) folder.
+    aalib.copy_src_dirs(source_list, bag_path)
 
     # load environment variables for 'python-dotenv
     load_dotenv()
-
     #
     # Define a dictionary with details of the API.
     # TODO: Config file can be defined as command line argument.
-    my_config = pathlib.Path('etc/archiveautomation.cfg')
-    my_api_conf = aalib.get_api_conf(my_config)
+    api_config = pathlib.Path('etc/archiveautomation.cfg')
+    my_api_conf = aalib.get_api_conf(api_config)
 
     if not my_api_conf:
         print("Not API configuration. Check congfig file. Exiting...")

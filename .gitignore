@@ -1,5 +1,7 @@
 venv
 
+my_accession.cfg
+
 .env
 
 __pycache__

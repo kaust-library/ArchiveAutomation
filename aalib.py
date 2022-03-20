@@ -1,5 +1,6 @@
 
 import os
+import sys
 import requests
 import bagit
 import pathlib
@@ -8,6 +9,45 @@ import configparser
 from datetime import datetime
 from dotenv import load_dotenv
 from dcxml import simpledc
+
+def av_run(av_config):
+   """Run the 'clamav' antivirus. The output is a file that contains the 
+       number of infected files. If not zero, then we stop."""
+
+   # The date when we run the antivirus check that will be used to form
+   # the name of the output file of the run.
+   av_run_date = datetime.today().strftime("%Y%m%d")
+   # Update the antivirus database    
+   av_update = f"{av_config['av_dir']}/{av_config['av_update']}"
+   print(f"Antivirus update: {pathlib.Path(av_update)}")
+   # Antivirus command line
+   av_log_file = f"{av_config['av_logs_root']}_{av_config['av_accession']}_{av_run_date}.txt"
+   av_check = f"{av_config['av_dir']}/{av_config['av_clamav']} --recursive \"{av_config['av_location']}\" -v -a -l {av_log_file}"
+   print(f"Antivirus check: {pathlib.Path(av_check)}")
+
+def copy_src_dirs(source_dir, dest_dir):
+    """Copy files from source directory to destination. The source can be multiple folders"""
+    
+    try:
+
+        if len(source_dir) == 1:
+            print(f"Copying {source_dir} to {dest_dir}... ", end='')
+            shutil.copytree(source_dir, dest_dir)
+            print('done')
+        else:
+            dest_dir_orig = dest_dir
+            for ii in source_dir:
+                basename = pathlib.PurePath(ii).name
+                dest_dir = pathlib.PurePath(dest_dir_orig).joinpath(basename)
+                print(f"Copying from {pathlib.Path(ii)} to {dest_dir}... ", end='')
+                shutil.copytree(ii, dest_dir)
+                print('done')
+    except FileExistsError:
+        print(f"\nError: Destination folder '{dest_dir}' already exists. Remove the folder first. \nBye for now.")
+        sys.exit(1)
+    except Exception as ee:
+        print(f"\nError {ee} while copying files. Aborting the script.")
+        sys.exit(1)
 
 
 def get_archivera_dc():
