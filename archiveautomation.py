@@ -29,13 +29,12 @@ def aaflow(input):
     config['CLAMAV'].update({'av_accession': config['ACCESSION']['accession_id']})
     aalib.av_run(config['CLAMAV'])
 
-    source_list = [ii.strip() for ii in config['BAGGER']['source_dir'].split(',')]
-
     #
     # Define variables for convinience only.
     #
     acc_number = config['ACCESSION']['accession_id']
     bag_path = config['BAGGER']['dest_dir']
+    source_list = [ii.strip() for ii in config['BAGGER']['source_dir'].split(',')]
 
     # Copy source folder(s) to destination (BagIt) folder.
     aalib.copy_src_dirs(source_list, bag_path)
