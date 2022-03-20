@@ -4,16 +4,16 @@
 # The file is uploaded to Preservica
 
 import sys
-import requests
-import bagit
+#import requests
+#import bagit
 import pathlib
-import shutil
+#import shutil
 import configparser
 import aalib
 import click
-from datetime import datetime
+#from datetime import datetime
 from dotenv import load_dotenv
-from dcxml import simpledc
+#from dcxml import simpledc
 
 @click.command()
 @click.argument('input', type=click.File('r'))
