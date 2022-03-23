@@ -1,5 +1,0 @@
-Click
-bagit
-dcxml
-python-dotenv
-requests
