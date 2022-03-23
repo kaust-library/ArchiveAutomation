@@ -18,6 +18,18 @@ from dotenv import load_dotenv
 @click.command()
 @click.argument('input', type=click.File('r'))
 def aaflow(input):
+    """Automate digital preservation workflow. 
+    
+    From INPUT creates a BagIt directory, and DC core complaint file.
+    
+    \b
+    The INPUT contains the 
+    * accession number, 
+    * collection, 
+    * CLAMAV configuration,
+    * Droid configuration,
+    * Jhove configuration
+     """
 
     config = configparser.ConfigParser()
     config._interpolation = configparser.ExtendedInterpolation()
