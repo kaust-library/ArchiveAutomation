@@ -1,0 +1,25 @@
+#
+# Configuration file for the digital preservation workflow
+# 
+
+[ACCESSION]
+accession_id = 999_999_9999
+collection = arts
+
+[BAGGER]
+# You can specify a comma separated list of directories as source: dir1, dir2, ...
+source_dir = /path/to/source/dir/1, /path/to/source/dir/2, ...
+dest_dir = /path/to/new/bag/file 
+
+[CLAMAV]
+av_dir = /path/to/clamav/dir
+av_update = freshclam.exe
+av_clamav = clamscan.exe
+av_logs_root = /pat/to/clamav/dir/log
+
+[DROID]
+droid_dir = /path/to/dir/droid/
+
+[JHOVE]
+jhove_dir = /path/to/dir/jhome/
+
