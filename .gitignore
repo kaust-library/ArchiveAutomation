@@ -2,6 +2,8 @@ venv
 
 my_accession.cfg
 
+archiveautomation.egg-info
+
 .env
 
 __pycache__
