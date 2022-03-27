@@ -1,6 +1,6 @@
 venv
 
-my_accession.cfg
+*.cfg
 
 archiveautomation.egg-info
 
