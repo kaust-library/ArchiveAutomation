@@ -76,3 +76,43 @@ The takes 3 arguments: an accession number (ACCXAN), a path to where are the fil
 Have a nice day.
 (venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$
 ```
+## Droid
+
+Installing [`droid`](https://www.nationalarchives.gov.uk/information-management/manage-information/preserving-digital-records/droid/) on linux
+
+```
+mgarcia@arda:~/Downloads$ sudo mkdir /usr/share/droid
+mgarcia@arda:~/Downloads$ ls -l droid-binary-6.5.2-bin.zip 
+-rw-rw-r-- 1 mgarcia mgarcia 50272665 Mar 27 11:23 droid-binary-6.5.2-bin.zip
+mgarcia@arda:~/Downloads$ 
+mgarcia@arda:~/Downloads$ sudo unzip droid-binary-6.5.2-bin.zip -d /usr/share/droid/
+```
+
+To check if it's working, display `droid` help
+
+```
+garcia@arda:~/Downloads$ java -jar /usr/share/droid/droid-command-line-6.5.2.jar -h                    
+2022-03-27T11:30:30,107  INFO [main] DroidCommandLine:140 - Starting DROID.    
+usage: droid [options]                                                                                  
+OPTIONS:
+(...)
+```
+
+Adding resource to a profile and running it
+
+```
+/usr/share/droid/droid.sh -a "/home/mgarcia/Pictures/Wallpaper/" -p "wallpaper.droid" 
+```
+
+Exporting a profile in `csv` format
+
+```
+mgarcia@arda:~$ /usr/share/droid/droid.sh -p wallpaper.droid -e my_wallpaper.csv
+
+mgarcia@arda:~$ more my_wallpaper.csv                                                                            
+"ID","PARENT_ID","URI","FILE_PATH","NAME","METHOD","STATUS","SIZE","TYPE","EXT","LAST_MODIFIED","EXTENSION_MISMAT
+CH","HASH","FORMAT_COUNT","PUID","MIME_TYPE","FORMAT_NAME","FORMAT_VERSION"                                      
+"2","","file:/home/mgarcia/Pictures/Wallpaper/","/home/mgarcia/Pictures/Wallpaper","Wallpaper","","Done","","Fold
+er","","2021-10-01T18:26:45","false","","","","","",""    
+(...)
+```
