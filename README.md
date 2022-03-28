@@ -28,25 +28,54 @@ mgarcia@arda:~/Documents/Work/ArchiveAutomation$
 
 ### Start Virtual Environment
 
-Activate the virtual environment and install extra packages
+Activate the virtual environment:
 
 ```
+#
 # Windows
+#
 PS C:\Users\garcm0b\OneDrive - KAUST\Documents\Work\ArchiveAutomation> .\venv\Scripts\activate
-(venv) PS C:\Users\garcm0b\OneDrive - KAUST\Documents\Work\ArchiveAutomation> pip install requests
+#
 # Linux
+#
 mgarcia@mordor:~/Documents/Work/ArchiveAutomation$ . venv/bin/activate
-(venv) mgarcia@mordor:~/Documents/Work/ArchiveAutomation$ pip install requests
 ```
+
+### Workflow Input File
+
+The takes a single argument: a file describing all information for the workflow. The steps in the workflow are represented by sections of the input file, like ACCESSION, BAGGER, CLAMAV, etc.
 
 ### Running the Script
 
-The takes 3 arguments: an accession number (ACCXAN), a path to where are the files, and a path to where the BagIt file will be created:
+Once the script is ready, simply call the script with the input file as parameter.
 
 ```
 (venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$ python archiveautomation.py 013_002_0026 /home/mgarcia/Documents/boat_trip_pictures /home/mgarcia/Documents/my_bag
 Have a nice day.
 (venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$
+```
+
+The script prints help message when no input file is provided
+
+```
+(venv) mgarcia@arda:~/Documents/Work/ArchiveAutomation$ archiveautomation 
+Usage: archiveautomation [OPTIONS] INPUT
+Try 'archiveautomation --help' for help.
+
+Error: Missing argument 'INPUT'.
+(venv) mgarcia@arda:~/Documents/Work/ArchiveAutomation$ 
+```
+
+Or the script can be called with the `--help` parameter
+
+```
+venv) mgarcia@arda:~/Documents/Work/ArchiveAutomation$ archiveautomation --help
+Usage: archiveautomation [OPTIONS] INPUT
+
+  Automate digital preservation workflow.
+
+  From INPUT creates a BagIt directory, and DC core complaint file.
+(...)
 ```
 
 ## Configuration
