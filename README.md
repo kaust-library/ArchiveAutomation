@@ -1,25 +1,32 @@
 # ArchiveAutomation
 
-Automate digital archival preservation
+Automate the digital preservation workflow. 
 
-## Clone the repository
+The workflow have the following steps:
 
-Clone the repository
+1. Run the antivirus.
+1. Create a _bag_ file from the source folders.
+1. Create a XML file Dublin Core.
+1. Run Droid for extraction of the metadata.
+1. Run JHove as a complement of the metadata.
+
+Next we describe the usage of the script, and the installation of dependencies are below
+
+## Usage
+
+The usage assumes that the repository is already cloned, and we are ready to run the script.
+
+### Update Local Repository
+
+Update the repository to latest version
 
 ```
-PS C:\Users\garcm0b\Work> git clone https://github.com/kaust-library/ArchiveAutomation.git
+mgarcia@arda:~/Documents/Work/ArchiveAutomation$ git pull
+Already up to date.
+mgarcia@arda:~/Documents/Work/ArchiveAutomation$ 
 ```
 
-## Virtual Environment and Dependencies
-
-Create a virtual environment for the project
-
-```
-# Windows
-PS C:\Users\garcm0b\OneDrive - KAUST\Documents\Work\ArchiveAutomation> python -m venv venv
-# Linux
-mgarcia@mordor:~/Documents/Work/ArchiveAutomation$ python3 -m venv venv
-```
+### Start Virtual Environment
 
 Activate the virtual environment and install extra packages
 
@@ -30,6 +37,37 @@ PS C:\Users\garcm0b\OneDrive - KAUST\Documents\Work\ArchiveAutomation> .\venv\Sc
 # Linux
 mgarcia@mordor:~/Documents/Work/ArchiveAutomation$ . venv/bin/activate
 (venv) mgarcia@mordor:~/Documents/Work/ArchiveAutomation$ pip install requests
+```
+
+### Running the Script
+
+The takes 3 arguments: an accession number (ACCXAN), a path to where are the files, and a path to where the BagIt file will be created:
+
+```
+(venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$ python archiveautomation.py 013_002_0026 /home/mgarcia/Documents/boat_trip_pictures /home/mgarcia/Documents/my_bag
+Have a nice day.
+(venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$
+```
+
+## Configuration
+
+### Clone the repository
+
+Clone the repository
+
+```
+PS C:\Users\garcm0b\Work> git clone https://github.com/kaust-library/ArchiveAutomation.git
+```
+
+### Virtual Environment and Dependencies
+
+Create a virtual environment for the project
+
+```
+# Windows
+PS C:\Users\garcm0b\OneDrive - KAUST\Documents\Work\ArchiveAutomation> python -m venv venv
+# Linux
+mgarcia@mordor:~/Documents/Work/ArchiveAutomation$ python3 -m venv venv
 ```
 
 Creating the `requirements.txt` file with the modules used
@@ -44,11 +82,11 @@ In case of a _new_ environment, you can install the requirements by reading the 
 (venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$ pip install -r requirements.txt
 ```
 
-## Configuration File
+### Configuration File
 
 The configuration details for the script are in the file `etc/archiveautomation.cfg.` When cloning the environment, the configuration file will be just a reminder (with an `example` extension) that it needs to be edited with the correct values, and save it as `archiveautomation.cfg.`
 
-## ArchivEra API Password
+### ArchivEra API Password
 
 The API password is handled in 2 ways: declaring it as an environment variable, or via `.env` file. For first case, set password according to your operating system:
 
@@ -67,15 +105,6 @@ ARCHIVERA_API_PW='hello_world'
 (venv) PS C:\Users\garcm0b\Work\ArchiveAutomation>
 ```
 
-## Running the Script
-
-The takes 3 arguments: an accession number (ACCXAN), a path to where are the files, and a path to where the BagIt file will be created:
-
-```
-(venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$ python archiveautomation.py 013_002_0026 /home/mgarcia/Documents/boat_trip_pictures /home/mgarcia/Documents/my_bag
-Have a nice day.
-(venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$
-```
 ## Droid
 
 Installing [`droid`](https://www.nationalarchives.gov.uk/information-management/manage-information/preserving-digital-records/droid/) on linux
