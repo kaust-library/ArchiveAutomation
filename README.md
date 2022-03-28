@@ -93,23 +93,23 @@ PS C:\Users\garcm0b\Work> git clone https://github.com/kaust-library/ArchiveAuto
 Create a virtual environment for the project
 
 ```
+#
 # Windows
+#
 PS C:\Users\garcm0b\OneDrive - KAUST\Documents\Work\ArchiveAutomation> python -m venv venv
+#
 # Linux
+#
 mgarcia@mordor:~/Documents/Work/ArchiveAutomation$ python3 -m venv venv
 ```
 
-Creating the `requirements.txt` file with the modules used
+Setup the environment
 
 ```
-(venv) PS C:\Users\garcm0b\Work\ArchiveAutomation> pip freeze > requirements.txt
+pip install --editable .
 ```
 
-In case of a _new_ environment, you can install the requirements by reading the file
-
-```
-(venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$ pip install -r requirements.txt
-```
+This will install all dependencies listed in the section `install_requires` of the `setup.py` file.
 
 ### Configuration File
 
