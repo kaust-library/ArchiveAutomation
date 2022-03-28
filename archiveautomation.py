@@ -108,5 +108,9 @@ def aaflow(input):
     with open(dc_file, 'w') as ff_dc:
         ff_dc.write(dc_text)
 
+
+    # Run Droid on the "bag" folder
+    aalib.droid_run(config['DROID'], bag_path, acc_number)
+
     # The End
     print('Have a nice day.')

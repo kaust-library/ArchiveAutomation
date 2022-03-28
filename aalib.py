@@ -6,9 +6,34 @@ import bagit
 import pathlib
 import shutil
 import configparser
+import subprocess
 from datetime import datetime
 from dotenv import load_dotenv
 from dcxml import simpledc
+
+
+def droid_run(droid_config, bag_path, acc_number):
+    """Run Droid on the destination folder"""
+
+    try:
+        # Create a droid 'profile.'
+        droid_cmd = f"{droid_config['droid_dir']}/{droid_config['droid_bin']} -a {bag_path}/data -p {acc_number}.droid"
+        result = subprocess.run(droid_cmd.split(),  stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE)
+        result.check_returncode()
+    
+        # Export profile in csv format.
+        droid_csv = f"-p {acc_number}.droid -e -p {acc_number}.csv"
+        result = subprocess.run(droid_csv.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result.check_returncode()
+
+    except FileNotFoundError as ee:
+        print(f"Error running droid command: {ee}")
+
+    except: 
+        print(f"Error runniing droid:")
+    # Should we remove the "droid" file?
+    # rm {acc_number}.droid
 
 def av_run(av_config):
    """Run the 'clamav' antivirus. The output is a file that contains the 
