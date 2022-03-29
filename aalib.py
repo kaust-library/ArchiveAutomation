@@ -31,7 +31,7 @@ def droid_run(droid_config, bag_path, acc_number):
         print(f"Error running droid command: {ee}")
 
     except: 
-        print(f"Error runniing droid:")
+        print(f"Error runniing droid")
     # Should we remove the "droid" file?
     # rm {acc_number}.droid
 
