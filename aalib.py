@@ -16,24 +16,43 @@ def droid_run(droid_config, bag_path, acc_number):
     """Run Droid on the destination folder"""
 
     try:
+        #
+        # Changing to working dir, that is, the "bag path"
+        original_dir = os.getcwd()
+        print(f"Changing from {original_dir} to {bag_path}\n")
+        os.chdir(bag_path)
+
+        #
         # Create a droid 'profile.'
-        droid_cmd = f"{droid_config['droid_dir']}/{droid_config['droid_bin']} -a {bag_path}/data -p {acc_number}.droid"
+        droid_exec_path = pathlib.Path( droid_config['droid_dir'] + "/" + droid_config['droid_bin'] )
+        droid_cmd = f"{droid_exec_path} -a {bag_path}/data -p {acc_number}.droid"
+        print(f"Creating droid profile...")
+        print(f"Running droid command {droid_cmd}")
         result = subprocess.run(droid_cmd.split(),  stdout=subprocess.PIPE, 
             stderr=subprocess.PIPE)
         result.check_returncode()
-    
+        print("done.\n")
+
+        #
         # Export profile in csv format.
-        droid_csv = f"-p {acc_number}.droid -e -p {acc_number}.csv"
+        droid_csv = f"{droid_exec_path} -p {acc_number}.droid -e {acc_number}.csv"
+        print(f"Exporting droid profile to csv...")
+        print(f"Running droid command: {droid_csv}")
         result = subprocess.run(droid_csv.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         result.check_returncode()
+        print("done.\n")
 
     except FileNotFoundError as ee:
         print(f"Error running droid command: {ee}")
 
     except: 
-        print(f"Error runniing droid")
+        print(f"Error running droid")
     # Should we remove the "droid" file?
     # rm {acc_number}.droid
+
+    #
+    # Before leaving, return to original dir.
+    print(f"Returning to {original_dir}\n")
 
 def av_run(av_config):
    """Run the 'clamav' antivirus. The output is a file that contains the 
