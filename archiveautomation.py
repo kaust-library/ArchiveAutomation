@@ -110,7 +110,7 @@ def aaflow(input):
 
 
     # Run Droid on the "bag" folder
-    aalib.droid_run(config['DROID'], bag_path, acc_number)
+    _ = aalib.droid_run(config['DROID'], bag_path, acc_number)
 
     # The End
     print('Have a nice day.')
