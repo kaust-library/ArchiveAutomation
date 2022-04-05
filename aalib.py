@@ -47,9 +47,16 @@ def droid_run(droid_config, bag_path, acc_number):
 
     except: 
         print(f"Error running droid")
-    # Should we remove the "droid" file?
-    # rm {acc_number}.droid
 
+    try:
+        # DEBUG
+        print(droid_config['keep_profile'])
+        if droid_config['keep_profile'].upper() == "FALSE":
+            print(f"Removing droid profile {acc_number}.droid")
+            os.remove(f"{acc_number}.droid")
+    except FileNotFoundError as ff:
+        print(f"Droid profile {acc_number}.droid not found!!")
+        
     #
     # Before leaving, return to original dir.
     print(f"Returning to {original_dir}\n")
