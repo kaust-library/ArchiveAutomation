@@ -111,7 +111,7 @@ def av_run(av_config):
     is_infected = check_infected(result.stdout)
     if is_infected:
         print("Caution!!!Possible infection!!!!")
-        print("Aborting execution")
+        print("Aborting execution.")
         sys.exit(1)
     
 
@@ -129,7 +129,7 @@ def copy_src_dirs(source_dir, dest_dir):
             for ii in source_dir:
                 basename = pathlib.PurePath(ii).name
                 dest_dir = pathlib.PurePath(dest_dir_orig).joinpath(basename)
-                print(f"Copying from {pathlib.Path(ii)} to {dest_dir}... ", end='')
+                print(f"Copying from {pathlib.Path(ii)} to {dest_dir}", end='... ')
                 shutil.copytree(ii, dest_dir)
                 print('done')
     except FileExistsError:
