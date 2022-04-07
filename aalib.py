@@ -62,29 +62,58 @@ def droid_run(droid_config, bag_path, acc_number):
     # Before leaving, return to original dir.
     print(f"Returning to {original_dir}\n")
 
+def check_infected(av_output):
+    """Check if there are any infectd file on the logs of the anti virus"""
+
+    is_infected = True
+    text = av_output.strip().split('\n')    
+    infect_line = text[-6]
+    infect_field, infect_num = infect_line.split()[0], infect_line.split()[2]
+    if infect_field == "Infected" and int(infect_num) == 0:
+        print(f"OK: has no infected file")
+        is_infected = False
+    elif infect_line == "Infected" and int(infect_num) != 0:
+        if int(infect_num) == 1:
+            print(f"Caution: there is 1 infected file!!!!!")
+        else:
+            print(f"Caution: there are {infect_num} infected files!!!!!")
+    else:
+        print(f"Error: could not find 'Infected' line in the output")
+
+    return is_infected
+
 def av_run(av_config):
-   """Run the 'clamav' antivirus. The output is a file that contains the 
+    """Run the 'clamav' antivirus. The output is a file that contains the 
        number of infected files. If not zero, then we stop."""
 
-   # The date when we run the antivirus check that will be used to form
-   # the name of the output file of the run.
-   av_run_date = datetime.today().strftime("%Y%m%d")
-   # Update the antivirus database    
-   av_update = f"{av_config['av_dir']}/{av_config['av_update']}"
-   print(f"Antivirus update: {pathlib.Path(av_update)}")
-   result = subprocess.run(av_update.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-   # Antivirus command line
-   av_log_file = f"{av_config['av_logs_root']}_{av_config['av_accession']}_{av_run_date}.txt"
-   av_check = f"{av_config['av_dir']}/{av_config['av_clamav']} --recursive \"{av_config['av_location']}\" -v -a -l {av_log_file}"
-   print(f"Antivirus check: {pathlib.Path(av_check)}", end='... ')
-   result = subprocess.run(av_check.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-   print("done.")
-   print(f"Writing ClamAV output file {av_log_file}")
-   with open(av_log_file, encoding="utf-8") as ff:
-       ff.writelines(result.stdout)
-   print("done.")
-    
+    # The date when we run the antivirus check that will be used to form
+    # the name of the output file of the run.
+    av_run_date = datetime.today().strftime("%Y%m%d")
 
+    # Update the antivirus database    
+    av_update = f"{av_config['av_dir']}/{av_config['av_update']}"
+    print(f"Antivirus update: {pathlib.Path(av_update)}", end='...')
+    result = subprocess.run(av_update.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    print("done.")
+
+    # Antivirus command line
+    av_log_file = f"{av_config['av_logs_root']}_{av_config['av_accession']}_{av_run_date}.txt"
+    av_check = f"{av_config['av_dir']}/{av_config['av_clamav']} --recursive \"{av_config['av_location']}\" -v -a -l {av_log_file}"
+    print(f"Antivirus check: {pathlib.Path(av_check)}", end='... ')
+    result = subprocess.run(av_check.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    print("done.")
+
+    # Preparing to check the amount of infected files
+    print(f"Writing ClamAV output file {av_log_file}", end='... ')
+    with open(av_log_file, encoding="utf-8") as ff:
+        ff.writelines(result.stdout)
+    print("done.")
+    is_infected = check_infected(result.stdout)
+    if is_infected:
+        print("Caution!!!Possible infection!!!!")
+        print("Aborting execution")
+        sys.exit(1)
+    
 
 def copy_src_dirs(source_dir, dest_dir):
     """Copy files from source directory to destination. The source can be multiple folders"""

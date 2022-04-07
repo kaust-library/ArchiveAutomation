@@ -39,7 +39,7 @@ def aaflow(input):
     # we need in a single place before calling the function.
     config['CLAMAV'].update({'av_location': config['BAGGER']['source_dir']})
     config['CLAMAV'].update({'av_accession': config['ACCESSION']['accession_id']})
-    aalib.av_run(config['CLAMAV'])
+    _ = aalib.av_run(config['CLAMAV'])
 
     #
     # Define variables for convinience only.
