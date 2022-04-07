@@ -63,14 +63,14 @@ def droid_run(droid_config, bag_path, acc_number):
     print(f"Returning to {original_dir}\n")
 
 def check_infected(av_output):
-    """Check if there are any infectd file on the logs of the anti virus"""
+    """Check if there is any infectd file on the log file of the anti virus"""
 
     is_infected = True
-    text = av_output.strip().split('\n')    
+    text = av_output.strip().split('\n')
     infect_line = text[-6]
     infect_field, infect_num = infect_line.split()[0], infect_line.split()[2]
     if infect_field == "Infected" and int(infect_num) == 0:
-        print(f"OK: has no infected file")
+        print(f"OK: no infected files")
         is_infected = False
     elif infect_line == "Infected" and int(infect_num) != 0:
         if int(infect_num) == 1:
