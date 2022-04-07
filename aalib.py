@@ -1,6 +1,8 @@
 
+from cgitb import text
 import os
 import sys
+from unittest import result
 import requests
 import bagit
 import pathlib
@@ -29,7 +31,7 @@ def droid_run(droid_config, bag_path, acc_number):
         print(f"Creating droid profile...")
         print(f"Running droid command {droid_cmd}")
         result = subprocess.run(droid_cmd.split(),  stdout=subprocess.PIPE, 
-            stderr=subprocess.PIPE)
+            stderr=subprocess.PIPE, text=True)
         result.check_returncode()
         print("done.\n")
 
@@ -38,7 +40,7 @@ def droid_run(droid_config, bag_path, acc_number):
         droid_csv = f"{droid_exec_path} -p {acc_number}.droid -e {acc_number}.csv"
         print(f"Exporting droid profile to csv...")
         print(f"Running droid command: {droid_csv}")
-        result = subprocess.run(droid_csv.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result = subprocess.run(droid_csv.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         result.check_returncode()
         print("done.\n")
 
@@ -50,7 +52,6 @@ def droid_run(droid_config, bag_path, acc_number):
 
     try:
         # DEBUG
-        print(droid_config['keep_profile'])
         if droid_config['keep_profile'].upper() == "FALSE":
             print(f"Removing droid profile {acc_number}.droid")
             os.remove(f"{acc_number}.droid")
@@ -71,10 +72,19 @@ def av_run(av_config):
    # Update the antivirus database    
    av_update = f"{av_config['av_dir']}/{av_config['av_update']}"
    print(f"Antivirus update: {pathlib.Path(av_update)}")
+   result = subprocess.run(av_update.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
    # Antivirus command line
    av_log_file = f"{av_config['av_logs_root']}_{av_config['av_accession']}_{av_run_date}.txt"
    av_check = f"{av_config['av_dir']}/{av_config['av_clamav']} --recursive \"{av_config['av_location']}\" -v -a -l {av_log_file}"
-   print(f"Antivirus check: {pathlib.Path(av_check)}")
+   print(f"Antivirus check: {pathlib.Path(av_check)}", end='... ')
+   result = subprocess.run(av_check.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+   print("done.")
+   print(f"Writing ClamAV output file {av_log_file}")
+   with open(av_log_file, encoding="utf-8") as ff:
+       ff.writelines(result.stdout)
+   print("done.")
+    
+
 
 def copy_src_dirs(source_dir, dest_dir):
     """Copy files from source directory to destination. The source can be multiple folders"""
