@@ -92,7 +92,7 @@ def av_run(av_config):
 
     # Update the antivirus database    
     av_update = f"{av_config['av_dir']}/{av_config['av_update']}"
-    print(f"Antivirus update: {pathlib.Path(av_update)}", end='...')
+    print(f"Antivirus update: {pathlib.Path(av_update)}", end='... ')
     result = subprocess.run(av_update.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     print("done.")
 
@@ -121,7 +121,7 @@ def copy_src_dirs(source_dir, dest_dir):
     try:
 
         if len(source_dir) == 1:
-            print(f"Copying {source_dir} to {dest_dir}... ", end='')
+            print(f"Copying {source_dir} to {dest_dir}", end='... ')
             shutil.copytree(source_dir, dest_dir)
             print('done')
         else:
