@@ -108,7 +108,7 @@ def av_run(av_config):
     #
     # Testing the command line for AV. Remove after testing.
     if av_config['run_it'].upper() != "FALSE":
-        result = subprocess.run(str(av_check).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        result = subprocess.run(av_check, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding='utf88')
     print("done.")
 
     # Preparing to check the amount of infected files
@@ -116,7 +116,7 @@ def av_run(av_config):
     if av_config['run_it'].upper() != "FALSE":
         try:
 
-            with open(av_log_file, 'w+', encoding="utf-8") as ff:
+            with open(av_log_file, 'w', encoding="utf-8") as ff:
                 ff.writelines(result.stdout)
             print("done.")
             is_infected = check_infected(result.stdout)
