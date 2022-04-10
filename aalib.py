@@ -33,7 +33,7 @@ def droid_run(droid_config, bag_path, acc_number):
         print(f"Running droid command {droid_cmd}")
         result = subprocess.run(droid_cmd,  stdout=subprocess.PIPE, 
             stderr=subprocess.STDOUT, text=True, shell=True)
-        result.check_returncode()
+        #result.check_returncode()
         print(results.stdout)
         print("done.\n")
 
