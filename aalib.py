@@ -27,7 +27,8 @@ def droid_run(droid_config, bag_path, acc_number):
         #
         # Create a droid 'profile.'
         droid_exec_path = pathlib.Path( droid_config['droid_dir'] + "/" + droid_config['droid_bin'] )
-        droid_cmd = pathlib.Path(f"{droid_exec_path} -a {bag_path} + '/' + data -p {acc_number}.droid")
+        droid_bag_path = pathlib.Path(bag_path + "/" data)
+        droid_cmd = pathlib.Path(f"{droid_exec_path} -a {droid_bag_path} -p {acc_number}.droid")
         print(f"Creating droid profile...")
         print(f"Running droid command {droid_cmd}")
         result = subprocess.run(droid_cmd.split(),  stdout=subprocess.PIPE, 
