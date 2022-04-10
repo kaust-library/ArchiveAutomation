@@ -174,3 +174,7 @@ CH","HASH","FORMAT_COUNT","PUID","MIME_TYPE","FORMAT_NAME","FORMAT_VERSION"
 er","","2021-10-01T18:26:45","false","","","","","",""    
 (...)
 ```
+
+## Test
+
+Test in `E:\ADMIN\TEST_FULL_WORKFLOW\mg_test`
