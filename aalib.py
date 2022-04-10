@@ -31,8 +31,8 @@ def droid_run(droid_config, bag_path, acc_number):
         droid_cmd = pathlib.Path(f"{droid_exec_path} -a {droid_bag_path} -p {acc_number}.droid")
         print(f"Creating droid profile...")
         print(f"Running droid command {droid_cmd}")
-        result = subprocess.run(droid_cmd.split(),  stdout=subprocess.PIPE, 
-            stderr=subprocess.STDOUT, text=True)
+        result = subprocess.run(droid_cmd,  stdout=subprocess.PIPE, 
+            stderr=subprocess.STDOUT, text=True, shell=True)
         result.check_returncode()
         print(results.stdout)
         print("done.\n")
