@@ -130,8 +130,9 @@ def copy_src_dirs(source_dir, dest_dir):
     """Copy files from source directory to destination. The source can be multiple folders"""
     
     try:
-
+        print(f"Number of inpout files: {len(source_dir)}")
         if len(source_dir) == 1:
+            source_dir = source_dir[0]
             print(f"Copying {source_dir} to {dest_dir}", end='... ')
             shutil.copytree(source_dir, dest_dir)
             print('done')
