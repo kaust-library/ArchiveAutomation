@@ -111,7 +111,7 @@ def av_run(av_config):
 
     # Preparing to check the amount of infected files
     print(f"Writing ClamAV output file {av_log_file}", end='... ')
-    with open(av_log_file, encoding="utf-8") as ff:
+    with open(av_log_file, 'w+', encoding="utf-8") as ff:
         ff.writelines(result.stdout)
     print("done.")
     is_infected = check_infected(result.stdout)
