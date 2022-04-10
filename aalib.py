@@ -97,7 +97,7 @@ def av_run(av_config):
     #
     # Testing the command line for AV. Remove after testing.
     if av_config['run_it'].upper() != "FALSE":
-        result = subprocess.run(av_update.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        result = subprocess.run(av_update, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     print("done.")
 
     # Antivirus command line
