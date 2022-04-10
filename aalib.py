@@ -44,7 +44,7 @@ def droid_run(droid_config, bag_path, acc_number):
         print(f"Running droid command: {droid_csv}")
         result = subprocess.run(droid_csv, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         result.check_returncode()
-        print(results.stdout)
+        print(result.stdout)
         print("done.\n")
 
     except FileNotFoundError as ee:
