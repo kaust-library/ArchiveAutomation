@@ -112,16 +112,19 @@ def av_run(av_config):
     # Preparing to check the amount of infected files
     print(f"Writing ClamAV output file {av_log_file}", end='... ')
     if av_config['run_it'].upper() != "FALSE":
+        try:
 
-        with open(av_log_file, 'w+', encoding="utf-8") as ff:
-            ff.writelines(result.stdout)
-        print("done.")
-    is_infected = check_infected(result.stdout)
-    if is_infected:
-        print("Caution!!!Possible infection!!!!")
-        print("Aborting execution.")
-        sys.exit(1)
-    
+            with open(av_log_file, 'w+', encoding="utf-8") as ff:
+                ff.writelines(result.stdout)
+            print("done.")
+            is_infected = check_infected(result.stdout)
+            if is_infected:
+                print("Caution!!!Possible infection!!!!")
+                print("Aborting execution.")
+                sys.exit(1)
+        except:
+            print(f"Error writing ClamAV logs.")
+            sys.exit(1)
 
 def copy_src_dirs(source_dir, dest_dir):
     """Copy files from source directory to destination. The source can be multiple folders"""
