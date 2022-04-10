@@ -31,7 +31,7 @@ def droid_run(droid_config, bag_path, acc_number):
         droid_cmd = pathlib.Path(f"{droid_exec_path} -a {droid_bag_path} -p {acc_number}.droid")
         print(f"Creating droid profile...")
         print(f"Running droid command {droid_cmd}")
-        result = subprocess.run(droid_cmd.split(),  stdout=subprocess.PIPE, 
+        result = subprocess.run(droid_cmd,  stdout=subprocess.PIPE, 
             stderr=subprocess.STDOUT, text=True)
         result.check_returncode()
         print(results.stdout)
@@ -42,7 +42,7 @@ def droid_run(droid_config, bag_path, acc_number):
         droid_csv = f"{droid_exec_path} -p {acc_number}.droid -e {acc_number}.csv"
         print(f"Exporting droid profile to csv...")
         print(f"Running droid command: {droid_csv}")
-        result = subprocess.run(droid_csv.split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        result = subprocess.run(droid_csv, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         result.check_returncode()
         print(results.stdout)
         print("done.\n")
