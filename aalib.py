@@ -26,13 +26,12 @@ def droid_run(droid_config, bag_path, acc_number):
 
         #
         # Create a droid 'profile.'
-        droid_exec_path = pathlib.Path( droid_config['droid_dir'] + "/" + droid_config['droid_bin'] )
-        droid_bag_path = pathlib.Path(bag_path + "/" + "data")
-        droid_cmd = pathlib.Path(f"{droid_exec_path} -a {droid_bag_path} -p {acc_number}.droid")
+        droid_exec_path = droid_config['droid_dir'] + "/" + droid_config['droid_bin']
+        droid_bag_path = bag_path + "/" + "data"
+        droid_cmd = pathlib.PureWindowsPath(f"{droid_exec_path} -a {droid_bag_path} -p {acc_number}.droid")
         print(f"Creating droid profile...")
         print(f"Running droid command {droid_cmd}")
-        result = subprocess.run(droid_cmd,  stdout=subprocess.PIPE, 
-            stderr=subprocess.STDOUT, text=True, shell=True)
+        result = subprocess.run(droid_cmd,  stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, shell=True)
         #result.check_returncode()
         print(results.stdout)
         print("done.\n")
