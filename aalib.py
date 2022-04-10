@@ -31,7 +31,7 @@ def droid_run(droid_config, bag_path, acc_number):
         print(f"Creating droid profile...")
         print(f"Running droid command {droid_cmd}")
         result = subprocess.run(droid_cmd.split(),  stdout=subprocess.PIPE, 
-            stderr=subprocess.PIPE, text=True)
+            stderr=subprocess.STDOUT, text=True)
         result.check_returncode()
         print("done.\n")
 
@@ -40,7 +40,7 @@ def droid_run(droid_config, bag_path, acc_number):
         droid_csv = f"{droid_exec_path} -p {acc_number}.droid -e {acc_number}.csv"
         print(f"Exporting droid profile to csv...")
         print(f"Running droid command: {droid_csv}")
-        result = subprocess.run(droid_csv.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        result = subprocess.run(droid_csv.split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         result.check_returncode()
         print("done.\n")
 
@@ -97,7 +97,7 @@ def av_run(av_config):
     #
     # Testing the command line for AV. Remove after testing.
     if av_config['run_it'].upper() != "FALSE":
-        result = subprocess.run(av_update, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        result = subprocess.run(av_update, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("done.")
 
     # Antivirus command line
@@ -108,7 +108,7 @@ def av_run(av_config):
     #
     # Testing the command line for AV. Remove after testing.
     if av_config['run_it'].upper() != "FALSE":
-        result = subprocess.run(str(av_check).split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        result = subprocess.run(str(av_check).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("done.")
 
     # Preparing to check the amount of infected files
@@ -132,7 +132,6 @@ def copy_src_dirs(source_dir, dest_dir):
     """Copy files from source directory to destination. The source can be multiple folders"""
     
     try:
-        print(f"Number of inpout files: {len(source_dir)}")
         if len(source_dir) == 1:
             source_dir = source_dir[0]
             print(f"Copying {source_dir} to {dest_dir}", end='... ')
