@@ -50,8 +50,8 @@ def droid_run(droid_config, bag_path, acc_number):
     except FileNotFoundError as ee:
         print(f"Error running droid command: {ee}")
 
-    except: 
-        print(f"Error running droid")
+    except as ee: 
+        print(f"Error running droid: {ee}")
 
     try:
         # DEBUG
