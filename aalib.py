@@ -91,8 +91,9 @@ def av_run(av_config):
     av_run_date = datetime.today().strftime("%Y%m%d")
 
     # Update the antivirus database    
-    av_update = f"{av_config['av_dir']}/{av_config['av_update']}"
-    print(f"Antivirus update: {pathlib.Path(av_update)}", end='... ')
+    # pathlib.Path(av_check)
+    av_update = pathlib.Path(f"{av_config['av_dir']}/{av_config['av_update']}")
+    print(f"Antivirus update: {av_update}", end='... ')
     #
     # Testing the command line for AV. Remove after testing.
     if av_config['run_it'].upper() != "FALSE":
@@ -100,9 +101,10 @@ def av_run(av_config):
     print("done.")
 
     # Antivirus command line
+
     av_log_file = f"{av_config['av_logs_root']}_{av_config['av_accession']}_{av_run_date}.txt"
-    av_check = f"{av_config['av_dir']}/{av_config['av_clamav']} --recursive \"{av_config['av_location']}\" -v -a -l {av_log_file}"
-    print(f"Antivirus check: {pathlib.Path(av_check)}", end='... ')
+    av_check = pathlib.Path(f"{av_config['av_dir']}/{av_config['av_clamav']} --recursive \"{av_config['av_location']}\" -v -a -l {av_log_file}")
+    print(f"Antivirus check: {av_check}", end='... ')
     #
     # Testing the command line for AV. Remove after testing.
     if av_config['run_it'].upper() != "FALSE":
