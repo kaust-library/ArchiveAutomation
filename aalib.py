@@ -93,14 +93,20 @@ def av_run(av_config):
     # Update the antivirus database    
     av_update = f"{av_config['av_dir']}/{av_config['av_update']}"
     print(f"Antivirus update: {pathlib.Path(av_update)}", end='... ')
-    result = subprocess.run(av_update.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    #
+    # Testing the command line for AV. Remove after testing.
+    if av_config['run_it'].upper() != "FALSE":
+        result = subprocess.run(av_update.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     print("done.")
 
     # Antivirus command line
     av_log_file = f"{av_config['av_logs_root']}_{av_config['av_accession']}_{av_run_date}.txt"
     av_check = f"{av_config['av_dir']}/{av_config['av_clamav']} --recursive \"{av_config['av_location']}\" -v -a -l {av_log_file}"
     print(f"Antivirus check: {pathlib.Path(av_check)}", end='... ')
-    result = subprocess.run(av_check.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    #
+    # Testing the command line for AV. Remove after testing.
+    if av_config['run_it'].upper() != "FALSE":
+        result = subprocess.run(av_check.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     print("done.")
 
     # Preparing to check the amount of infected files
