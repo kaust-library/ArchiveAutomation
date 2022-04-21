@@ -26,14 +26,20 @@ def jhove_run(jhove_config, bag_path, acc_number):
 
     bag_path_data = os.path.join(bag_path, "data")
 
-    if jhove_config['jhove_xml'].upper == TRUE:
+    if jhove_config['jhove_xml'].upper() == "TRUE":
         jhove_cmd = f"{jhove_exec_path} -h xml -o {jhove_out_fname}.xml -m {jhove_config['jhove_module']} -kr {bag_path_data}"
     else:
         jhove_cmd = f"{jhove_exec_path} -o {jhove_out_fname}.txt -m {jhove_config['jhove_module']} -kr {bag_path_data}"
 
-    print(jhove_cmd)
-
-
+    try:
+        print(f"Running jhove {jhove_cmd}")
+        result = subprocess.run(jhove_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        result.check_returncode()
+        print(result.stdout)
+    except FileNotFoundError as ee:
+        print(f"Error running jhove command: {ee}")
+    except Exception as ee: 
+        print(f"Generic Error running jhove: {ee}")
 
 def droid_run(droid_config, bag_path, acc_number):
     """Run Droid on the destination folder"""
@@ -52,7 +58,7 @@ def droid_run(droid_config, bag_path, acc_number):
     print(f"Creating droid profile...")
     print(f"Running droid command {droid_cmd}")
     try:
-        result = subprocess.run(droid_cmd,  stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        result = subprocess.run(droid_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         result.check_returncode()
         print(result.stdout)
         print("done.\n")
