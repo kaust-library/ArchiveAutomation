@@ -1,6 +1,7 @@
 
 from cgitb import text
 import os
+from pickle import TRUE
 import sys
 from unittest import result
 import requests
@@ -12,6 +13,26 @@ import subprocess
 from datetime import datetime
 from dotenv import load_dotenv
 from dcxml import simpledc
+
+
+
+def jhove_run(jhove_config, bag_path, acc_number):
+    """Run Jhove"""
+
+    jhove_exec_path = os.path.join(jhove_config['jhove_dir'], jhove_config['jhove_bin'])
+
+    # Notice the extension to file name is missing. This will be added later.
+    jhove_out_fname = os.path.join(bag_path, f"jhove_{acc_number}")
+
+    bag_path_data = os.path.join(bag_path, "data")
+
+    if jhove_config['jhove_xml'].upper == TRUE:
+        jhove_cmd = f"{jhove_exec_path} -h xml -o {jhove_out_fname}.xml -m {jhove_config['jhove_module']} -kr {bag_path_data}"
+    else:
+        jhove_cmd = f"{jhove_exec_path} -o {jhove_out_fname}.txt -m {jhove_config['jhove_module']} -kr {bag_path_data}"
+
+    print(jhove_cmd)
+
 
 
 def droid_run(droid_config, bag_path, acc_number):
@@ -27,7 +48,6 @@ def droid_run(droid_config, bag_path, acc_number):
     # Create a droid 'profile.'
     droid_exec_path = os.path.join(droid_config['droid_dir'], droid_config['droid_bin'])
     droid_bag_path = os.path.join(bag_path, "data")
-    #droid_cmd = pathlib.PureWindowsPath(f"{droid_exec_path} -a {droid_bag_path} -p {acc_number}.droid")
     droid_cmd = r"{0} -a {1} -p {2}.droid".format(droid_exec_path, droid_bag_path, acc_number)
     print(f"Creating droid profile...")
     print(f"Running droid command {droid_cmd}")

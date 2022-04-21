@@ -112,5 +112,10 @@ def aaflow(input):
     # Run Droid on the "bag" folder
     _ = aalib.droid_run(config['DROID'], bag_path, acc_number)
 
+
+    # Run Jhove on the "bag" folder
+    _ = aalib.jhove_run(config['JHOVE'], bag_path, acc_number)
+
+
     # The End
     print('Have a nice day.')
