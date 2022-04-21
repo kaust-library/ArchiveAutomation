@@ -54,7 +54,7 @@ def droid_run(droid_config, bag_path, acc_number):
     # Create a droid 'profile.'
     droid_exec_path = os.path.join(droid_config['droid_dir'], droid_config['droid_bin'])
     droid_bag_path = os.path.join(bag_path, "data")
-    droid_cmd = r"{0} -a {1} -p {2}.droid".format(droid_exec_path, droid_bag_path, acc_number)
+    droid_cmd = f"{droid_exec_path} -a {droid_bag_path} -p {acc_number}.droid"
     print(f"Creating droid profile...")
     print(f"Running droid command {droid_cmd}")
     try:
