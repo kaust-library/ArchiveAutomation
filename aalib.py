@@ -162,7 +162,11 @@ def av_run(av_config):
 
 def copy_src_dirs(source_dir, dest_dir):
     """Copy files from source directory to destination. The source can be multiple folders"""
-    
+
+    if os.path.exists(dest_dir):
+        print(f"Directory {dest_dir} already exists. Remove it first.")
+        sys.exit(1)
+
     try:
         if len(source_dir) == 1:
             source_dir = source_dir[0]
