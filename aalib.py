@@ -261,15 +261,29 @@ def archivera_to_dc(Archivera_DC, my_accession, bag_path):
     # "contributors, coverage, languages, relations, rights"
     #
 
-    dc_extra = ['contributors', 'coverage', 'languages', 'relations', 'rights']
-
-    dc_data = {}
+    dc_data = dict(
+        contributors = ['CERN'],
+        coverage = ['Geneva'],
+        creators = ['CERN'],
+        dates = ['2002'],
+        descriptions = ['Simple Dublin Core generation'],
+        formats = ['application/xml'],
+        identifiers = ['dublin-core'],
+        languages = ['en'],
+        publishers = ['CERN'],
+        relations = ['Invenio Software'],
+        rights = ['MIT'],
+        sources = ['Python'],
+        subject = ['XML'],
+        titles = ['Dublin Core XML'],
+        types = ['Software'],    
+    )
 
     # To make record DC-core complaint, create missing fields from ArchivEra 
     # with a generic text.
-    for kk in dc_extra:
-        dc_data[kk] = ['Contact KAUST']
-    
+    #for kk in dc_extra:
+    #    dc_data[kk] = ['Contact KAUST']
+
     for kk in Archivera_DC.keys():
         items_display = len(my_accession['records'][0][kk])
         if items_display > 1:
