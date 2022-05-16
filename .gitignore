@@ -9,3 +9,5 @@ archiveautomation.egg-info
 __pycache__
 
 etc/archiveautomation.cfg
+
+derby.log
