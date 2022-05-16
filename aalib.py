@@ -96,8 +96,11 @@ def check_infected(av_output):
 
     is_infected = True
     text = av_output.strip().split('\n')
+    total_line = text[-7]
     infect_line = text[-6]
+    scanned_files = total_line.split()[-1]
     infect_field, infect_num = infect_line.split()[0], infect_line.split()[2]
+    print(f"Scanned {scanned_files} files")
     if infect_field == "Infected" and int(infect_num) == 0:
         print(f"OK: no infected files")
         is_infected = False
