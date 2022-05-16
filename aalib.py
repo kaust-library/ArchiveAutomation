@@ -233,7 +233,7 @@ def archivera_to_bagit(Archivera_BagIt, my_accession, bag_path):
 
     # HACK: I think this block is missing checking for exception...
     # Create a simple BagIt file, and initialize the bag info with creation of the bag.
-    my_bag = bagit.make_bag(bag_path, {'Bagging-Date': datetime.now().isoformat()})
+    my_bag = bagit.make_bag(bag_path, checksums=['sha256'])
 
     # HACK #2. Probably this part also need to for exception.
     # Update BagIt metadata
