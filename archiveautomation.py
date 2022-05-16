@@ -26,7 +26,6 @@ def aaflow(input):
     The INPUT contains the 
     * accession number, 
     * collection, 
-    * CLAMAV configuration,
     * Droid configuration,
     * Jhove configuration
      """
@@ -37,9 +36,9 @@ def aaflow(input):
 
     # Adding variables to the antivirus section so we have everything 
     # we need in a single place before calling the function.
-    config['CLAMAV'].update({'av_location': config['BAGGER']['source_dir']})
-    config['CLAMAV'].update({'av_accession': config['ACCESSION']['accession_id']})
-    _ = aalib.av_run(config['CLAMAV'])
+    #config['CLAMAV'].update({'av_location': config['BAGGER']['source_dir']})
+    #config['CLAMAV'].update({'av_accession': config['ACCESSION']['accession_id']})
+    #_ = aalib.av_run(config['CLAMAV'])
 
     #
     # Define variables for convinience only.
