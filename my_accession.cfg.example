@@ -3,37 +3,24 @@
 # 
 
 [ACCESSION]
-accession_id = 999999
-# The collection is not in use. Please ignore it.
-collection = your_collection
+accession_id = 013_002_0026
 
 [BAGGER]
 # You can specify a comma separated list of directories as source: dir1, dir2, ...
-source_dir = /path/to/files1, /path/to/files2
-dest_dir = /path/to/bag/file
+source_dir = C:\Users\garcm0b\Work\boat_trip_pictures, C:\Users\garcm0b\Work\my_event_1
+# Using Python ExtendedInterpolation to use the 'accession_id' as target directory
+dest_dir = C:\Users\garcm0b\Work\${ACCESSION:accession_id}
 # If 'false' the script will stop the the destination directory already exists.
-exists_OK = false
-
-[CLAMAV]
-av_dir = /path/to/clamav
-av_update = freshclam
-av_clamav = clamscan
-av_logs_root = /path/to/clamav/logs
-# Doesn't actually run the AV command, just print it.
-run_it = false
 
 [DROID]
-droid_dir = /path/to/droid/installation/dir
-droid_bin = droid.bat or droid.sh
+droid_dir = C:\Users\garcm0b\Work\Droid\mg_droid
+droid_bin = droid.bat
 # The profile is the database with the metadata in binary format. 
 # We just want the csv file, so we remove the profile.
 keep_profile = true
 
 [JHOVE]
-jhove_dir = /path/to/jhove/installation/dir
+jhove_dir = C:\Users\garcm0b\Work\jhove
 jhove_bin = jhove.bat
 jhove_module = jpeg-hul
-# If you want to save the output in XML format.
 jhove_xml = true
-
-
