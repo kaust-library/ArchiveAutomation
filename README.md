@@ -47,10 +47,10 @@ The takes a single argument: a file describing all information for the workflow.
 
 ### Running the Script
 
-Once the script is ready, simply call the script with the input file as parameter.
+Once the input file is ready, simply call the script with the input file as parameter.
 
 ```
-(venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$ python archiveautomation.py 013_002_0026 /home/mgarcia/Documents/boat_trip_pictures /home/mgarcia/Documents/my_bag
+(venv) PS C:\Users\garcm0b\Work\ArchiveAutomation> archiveautomation .\my_accession.cfg
 Have a nice day.
 (venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$
 ```
