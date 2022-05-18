@@ -1,5 +1,7 @@
 # ArchiveAutomation
 
+![Digital Preservation Workflow](pictures/Preservation_ingest_workflow.png)
+
 Automate the digital preservation workflow. 
 
 The workflow have the following steps:
