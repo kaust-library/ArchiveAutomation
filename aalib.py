@@ -262,16 +262,16 @@ def archivera_to_dc(Archivera_DC, my_accession, bag_path):
     #
 
     dc_data = dict(
-        contributors = ['CERN'],
-        coverage = ['Geneva'],
-        creators = ['CERN'],
+        contributors = ['Contact KAUST'],
+        coverage = ['KSA'],
+        creators = ['KAUST'],
         dates = ['2002'],
         descriptions = ['Simple Dublin Core generation'],
         formats = ['application/xml'],
         identifiers = ['dublin-core'],
         languages = ['en'],
-        publishers = ['CERN'],
-        relations = ['Invenio Software'],
+        publishers = ['KAUST'],
+        relations = ['Library'],
         rights = ['MIT'],
         sources = ['Python'],
         subject = ['XML'],
