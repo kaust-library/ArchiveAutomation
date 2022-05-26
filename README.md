@@ -173,45 +173,8 @@ ARCHIVERA_API_PW='hello_world'
 (venv) PS C:\Users\garcm0b\Work\ArchiveAutomation>
 ```
 
-## Droid
+## Droid and Jhove
 
 > There can't be any space in the `droid` path, otherwise the `droid.bat` script will fail. This means that installing `droid` in the `C:\Program Files` will not work.
 
-Installing [`droid`](https://www.nationalarchives.gov.uk/information-management/manage-information/preserving-digital-records/droid/) on linux
-
-```
-mgarcia@arda:~/Downloads$ sudo mkdir /usr/share/droid
-mgarcia@arda:~/Downloads$ ls -l droid-binary-6.5.2-bin.zip 
--rw-rw-r-- 1 mgarcia mgarcia 50272665 Mar 27 11:23 droid-binary-6.5.2-bin.zip
-mgarcia@arda:~/Downloads$ 
-mgarcia@arda:~/Downloads$ sudo unzip droid-binary-6.5.2-bin.zip -d /usr/share/droid/
-```
-
-To check if it's working, display `droid` help
-
-```
-garcia@arda:~/Downloads$ java -jar /usr/share/droid/droid-command-line-6.5.2.jar -h                    
-2022-03-27T11:30:30,107  INFO [main] DroidCommandLine:140 - Starting DROID.    
-usage: droid [options]                                                                                  
-OPTIONS:
-(...)
-```
-
-Adding resource to a profile and running it
-
-```
-/usr/share/droid/droid.sh -a "/home/mgarcia/Pictures/Wallpaper/" -p "wallpaper.droid" 
-```
-
-Exporting a profile in `csv` format
-
-```
-mgarcia@arda:~$ /usr/share/droid/droid.sh -p wallpaper.droid -e my_wallpaper.csv
-
-mgarcia@arda:~$ more my_wallpaper.csv                                                                            
-"ID","PARENT_ID","URI","FILE_PATH","NAME","METHOD","STATUS","SIZE","TYPE","EXT","LAST_MODIFIED","EXTENSION_MISMAT
-CH","HASH","FORMAT_COUNT","PUID","MIME_TYPE","FORMAT_NAME","FORMAT_VERSION"                                      
-"2","","file:/home/mgarcia/Pictures/Wallpaper/","/home/mgarcia/Pictures/Wallpaper","Wallpaper","","Done","","Fold
-er","","2021-10-01T18:26:45","false","","","","","",""    
-(...)
-```
+Both sessions for [Droid](https://www.nationalarchives.gov.uk/information-management/manage-information/preserving-digital-records/droid/) and [Jhome](http://jhove.openpreservation.org/) are very similar. They have the path to the installation directory, the name of executable program, and some parameter. For `droid`, the parameter is whether the Droid profile should be kept after running the script or not. For `jhove` it's the option to save the output in XML format.
