@@ -45,7 +45,44 @@ mgarcia@mordor:~/Documents/Work/ArchiveAutomation$ . venv/bin/activate
 
 ### Workflow Input File
 
-The takes a single argument: a file describing all information for the workflow. The steps in the workflow are represented by sections of the input file, like ACCESSION, BAGGER, CLAMAV, etc.
+The takes a single argument: a file describing all information for the workflow. The name (and extension) of file are irrelevant. Valid filename would be acceptable. 
+
+The steps in the workflow are represented by sections of the input file, like ACCESSION, BAGGER, CLAMAV, etc. The order of the section does not matter. But the they can't be removed.
+
+An example of input file
+
+```
+#
+# Configuration file for the digital preservation workflow
+# 
+
+[ACCESSION]
+accession_id = 013_002_0026
+
+[BAGGER]
+# You can specify a comma separated list of directories as source: dir1, dir2, ...
+source_dir = C:\Users\joe\pictures\boat_trip_pictures, C:\Users\joe\Work\documents
+# Using Python ExtendedInterpolation to use the 'accession_id' as target directory
+dest_dir = C:\Users\garcm0b\Work\${ACCESSION:accession_id}
+# If 'false' the script will stop the the destination directory already exists.
+
+
+[DROID]
+droid_dir = C:\Users\joe\Work\Droid\droid
+droid_bin = droid.bat
+# The profile is the database with the metadata in binary format. 
+# We just want the csv file, so we remove the profile.
+keep_profile = true
+
+[JHOVE]
+jhove_dir = C:\Users\joe\Work\jhove
+jhove_bin = jhove.bat
+jhove_module = jpeg-hul
+jhove_xml = true
+```
+
+> The `BAGGER:dest_dir` can't exist, otherwise the script will stop. By default, the directory name will be accession number, but it can be customized by the user. Like:
+> `dest_dir = /path/to/my/bag/dir`
 
 ### Running the Script
 
@@ -117,42 +154,20 @@ This will install all dependencies listed in the section `install_requires` of t
 
 The configuration details for the script are in the file `etc/archiveautomation.cfg.` When cloning the environment, the configuration file will be just a reminder (with an `example` extension) that it needs to be edited with the correct values, and save it as `archiveautomation.cfg.`
 
-
-An example of configuration
+Currently the only parameter in the configuration file is the setup of ArchivEra API
 
 ```
 #
-# Configuration file for the digital preservation workflow
-# 
+# Define the parameters for ArchivEra API
+#
 
-[ACCESSION]
-accession_id = 013_002_0026
-
-[BAGGER]
-# You can specify a comma separated list of directories as source: dir1, dir2, ...
-source_dir = C:\Users\joe\pictures\boat_trip_pictures, C:\Users\joe\Work\documents
-# Using Python ExtendedInterpolation to use the 'accession_id' as target directory
-dest_dir = C:\Users\garcm0b\Work\${ACCESSION:accession_id}
-# If 'false' the script will stop the the destination directory already exists.
-
-
-[DROID]
-droid_dir = C:\Users\joe\Work\Droid\droid
-droid_bin = droid.bat
-# The profile is the database with the metadata in binary format. 
-# We just want the csv file, so we remove the profile.
-keep_profile = true
-
-[JHOVE]
-jhove_dir = C:\Users\joe\Work\jhove
-jhove_bin = jhove.bat
-jhove_module = jpeg-hul
-jhove_xml = true
+[API]
+url = 'https://path.to.archive/public'
+client_id = 'api_client'
+grant_type = 'my grant type'
+username = 'my API user'
+database = 'my database'
 ```
-
-> The `BAGGER:dest_dir` can't exist, otherwise the script will stop. By default, the directory name will be accession number, but it can be customized by the user. Like:
-> `dest_dir = /path/to/my/bag/dir`
-
 
 ### ArchivEra API Password
 
