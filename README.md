@@ -45,7 +45,7 @@ mgarcia@mordor:~/Documents/Work/ArchiveAutomation$ . venv/bin/activate
 
 ### Workflow Input File
 
-The takes a single argument: a file describing all information for the workflow. The name (and extension) of file are irrelevant. Valid filename would be acceptable. 
+The takes a single argument: a file describing all information for the workflow. The name (and extension) of file are irrelevant. Any valid filename would be acceptable. 
 
 The steps in the workflow are represented by sections of the input file, like ACCESSION, BAGGER, CLAMAV, etc. The order of the section does not matter. But the they can't be removed.
 
@@ -83,6 +83,12 @@ jhove_xml = true
 
 > The `BAGGER:dest_dir` can't exist, otherwise the script will stop. By default, the directory name will be accession number, but it can be customized by the user. Like:
 > `dest_dir = /path/to/my/bag/dir`
+
+#### Droid and Jhove
+
+> There can't be any space in the `droid` path, otherwise the `droid.bat` script will fail. This means that installing `droid` in the `C:\Program Files` will not work.
+
+Both sessions for [Droid](https://www.nationalarchives.gov.uk/information-management/manage-information/preserving-digital-records/droid/) and [Jhome](http://jhove.openpreservation.org/) are very similar. They have the path to the installation directory, the name of executable program, and some parameter. For `droid`, the parameter is whether the Droid profile should be kept after running the script or not. For `jhove` it's the option to save the output in XML format.
 
 ### Running the Script
 
@@ -187,9 +193,3 @@ The second way of using the [password is via a `.env`](https://yuthakarn.medium.
 ARCHIVERA_API_PW='hello_world'
 (venv) PS C:\Users\garcm0b\Work\ArchiveAutomation>
 ```
-
-## Droid and Jhove
-
-> There can't be any space in the `droid` path, otherwise the `droid.bat` script will fail. This means that installing `droid` in the `C:\Program Files` will not work.
-
-Both sessions for [Droid](https://www.nationalarchives.gov.uk/information-management/manage-information/preserving-digital-records/droid/) and [Jhome](http://jhove.openpreservation.org/) are very similar. They have the path to the installation directory, the name of executable program, and some parameter. For `droid`, the parameter is whether the Droid profile should be kept after running the script or not. For `jhove` it's the option to save the output in XML format.
