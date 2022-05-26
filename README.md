@@ -117,6 +117,43 @@ This will install all dependencies listed in the section `install_requires` of t
 
 The configuration details for the script are in the file `etc/archiveautomation.cfg.` When cloning the environment, the configuration file will be just a reminder (with an `example` extension) that it needs to be edited with the correct values, and save it as `archiveautomation.cfg.`
 
+
+An example of configuration
+
+```
+#
+# Configuration file for the digital preservation workflow
+# 
+
+[ACCESSION]
+accession_id = 013_002_0026
+
+[BAGGER]
+# You can specify a comma separated list of directories as source: dir1, dir2, ...
+source_dir = C:\Users\joe\pictures\boat_trip_pictures, C:\Users\joe\Work\documents
+# Using Python ExtendedInterpolation to use the 'accession_id' as target directory
+dest_dir = C:\Users\garcm0b\Work\${ACCESSION:accession_id}
+# If 'false' the script will stop the the destination directory already exists.
+
+
+[DROID]
+droid_dir = C:\Users\joe\Work\Droid\droid
+droid_bin = droid.bat
+# The profile is the database with the metadata in binary format. 
+# We just want the csv file, so we remove the profile.
+keep_profile = true
+
+[JHOVE]
+jhove_dir = C:\Users\joe\Work\jhove
+jhove_bin = jhove.bat
+jhove_module = jpeg-hul
+jhove_xml = true
+```
+
+> The `BAGGER:dest_dir` can't exist, otherwise the script will stop. By default, the directory name will be accession number, but it can be customized by the user. Like:
+> `dest_dir = /path/to/my/bag/dir`
+
+
 ### ArchivEra API Password
 
 The API password is handled in 2 ways: declaring it as an environment variable, or via `.env` file. For first case, set password according to your operating system:
@@ -137,6 +174,8 @@ ARCHIVERA_API_PW='hello_world'
 ```
 
 ## Droid
+
+> There can't be any space in the `droid` path, otherwise the `droid.bat` script will fail. This means that installing `droid` in the `C:\Program Files` will not work.
 
 Installing [`droid`](https://www.nationalarchives.gov.uk/information-management/manage-information/preserving-digital-records/droid/) on linux
 
@@ -176,7 +215,3 @@ CH","HASH","FORMAT_COUNT","PUID","MIME_TYPE","FORMAT_NAME","FORMAT_VERSION"
 er","","2021-10-01T18:26:45","false","","","","","",""    
 (...)
 ```
-
-## Test
-
-Test in `E:\ADMIN\TEST_FULL_WORKFLOW\mg_test`
