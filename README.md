@@ -64,8 +64,6 @@ accession_id = 013_002_0026
 source_dir = C:\Users\joe\pictures\boat_trip_pictures, C:\Users\joe\Work\documents
 # Using Python ExtendedInterpolation to use the 'accession_id' as target directory
 dest_dir = C:\Users\garcm0b\Work\${ACCESSION:accession_id}
-# If 'false' the script will stop the the destination directory already exists.
-
 
 [DROID]
 droid_dir = C:\Users\joe\Work\Droid\droid
