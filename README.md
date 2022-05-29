@@ -63,13 +63,12 @@ accession_id = 013_002_0026
 # You can specify a comma separated list of directories as source: dir1, dir2, ...
 source_dir = C:\Users\joe\pictures\boat_trip_pictures, C:\Users\joe\Work\documents
 # Using Python ExtendedInterpolation to use the 'accession_id' as target directory
-dest_dir = C:\Users\garcm0b\Work\${ACCESSION:accession_id}
+dest_dir = C:\Users\joe\Work\${ACCESSION:accession_id}
 
 [DROID]
 droid_dir = C:\Users\joe\Work\Droid\droid
 droid_bin = droid.bat
 # The profile is the database with the metadata in binary format. 
-# We just want the csv file, so we remove the profile.
 keep_profile = true
 
 [JHOVE]
