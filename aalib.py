@@ -10,6 +10,7 @@ import pathlib
 import shutil
 import configparser
 import subprocess
+import logging
 from datetime import datetime
 from dotenv import load_dotenv
 from dcxml import simpledc
@@ -115,8 +116,9 @@ def check_infected(av_output):
     return is_infected
 
 def av_run(av_config):
-    """Run the 'clamav' antivirus. The output is a file that contains the 
-       number of infected files. If not zero, then we stop."""
+    """Run the 'clamav' antivirus. The output is ClamAV log file, saved in 'av_logs_root' directory
+    specified in the 'CLAMAV' session of the configuration file. If the ClamAV log file reports an
+    infected file, the execution of the workflow will stop."""
 
     # The date when we run the antivirus check that will be used to form
     # the name of the output file of the run.
