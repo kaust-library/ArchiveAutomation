@@ -124,6 +124,10 @@ def av_run(av_config):
     # the name of the output file of the run.
     av_run_date = datetime.today().strftime("%Y%m%d")
 
+    # Check if there is a file with the previous check, if "yes", then check if the 
+    # quarantine has expired before continuing.
+    
+
     # Update the antivirus database    
     # pathlib.Path(av_check)
     av_update = pathlib.Path(f"{av_config['av_dir']}/{av_config['av_update']}")
