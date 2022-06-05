@@ -11,7 +11,7 @@ import shutil
 import configparser
 import subprocess
 import logging
-from datetime import datetime
+import datetime as DT
 from dotenv import load_dotenv
 from dcxml import simpledc
 
@@ -115,6 +115,73 @@ def check_infected(av_output):
 
     return is_infected
 
+def check_quarantine(av_quarentine_file):
+    """Check if the quarantine is over."""
+
+    in_quarantine = True
+
+    try:
+        with open(av_quarentine_file, 'r', encoding="utf-8") as ff_av:
+            text = ff_av.readline()
+
+        quar_str, av_run_str = text.split(':')
+        quarantine = int(quar_str)
+        av_run = DT.date.fromisoformat(av_run_str.strip())
+
+        av_quar_end = av_run + DT.timedelta(days=quarantine)
+        av_today = DT.date.today()
+
+        if av_today > av_quar_end:
+            # Quarantine is over.
+            in_quarantine = False
+    
+    except Exception as ee:
+        logging.error(f"\nError {ee} while reading quarantine file {av_quarentine_file}.")
+        sys.exit(1)
+  
+    return in_quarantine
+
+def av_check(av_config):
+    """This routine controls the Anti-virus ClamAV life cycle. 
+    * Checks if it's the first scan of source files
+    * if yes:
+    *   run the first scan,
+    *   create quarantine file,
+    *   stop execution of the workflow
+    * else:
+    *   check if the quarantine is over:
+    *   if not over:
+    *      stop execution
+    *   else:
+    *      scan source files a second time
+    *      continue the workflow
+    """
+
+    # Check if there is a file with the previous check, if "yes", then check if the 
+    # quarantine has expired before continuing.
+
+    clamav_quarentine_file = os.path.join(av_config['quarentine_dir'], 
+        av_config['av_accession'])
+    
+    if not os.path.isfile(clamav_quarentine_file):
+        logging.info(f'Quarentine file {clamav_quarentine_file} not found. Running first scan')
+        _ = av_run(av_config)
+        av_run_date = datetime.today().strftime("%Y-%m-%d")
+        clamav_status_line = f"{av_config['quarantine_days']}:{av_run_date}"
+        with open(clamav_quarentine_file, 'w', encoding="utf-8") as ff_av:
+            ff_av.write(clamav_status_line)
+        logging.info(f'Starting quarantine of {av_config['quarantine_days']} for accession {av_config['av_accession']}')
+        sys.exit(0)
+    else:
+        in_quarantine = check_quarantine(clamav_quarentine_file)
+        if in_quarantine:
+            logging.info(f"Accession {av_config['av_accession']} still in quarantine. Stopping.")
+            sys.exit(0)
+        else:
+            logging.info(f"Quarantine of accession {av_config['av_accession']} is over")
+            _ = av_run(av_config)
+            # TODO: if quarantine is over, probably we can remove the quarantine file, 'clamav_quarentine_file'
+
 def av_run(av_config):
     """Run the 'clamav' antivirus. The output is ClamAV log file, saved in 'av_logs_root' directory
     specified in the 'CLAMAV' session of the configuration file. If the ClamAV log file reports an
@@ -123,10 +190,6 @@ def av_run(av_config):
     # The date when we run the antivirus check that will be used to form
     # the name of the output file of the run.
     av_run_date = datetime.today().strftime("%Y%m%d")
-
-    # Check if there is a file with the previous check, if "yes", then check if the 
-    # quarantine has expired before continuing.
-    
 
     # Update the antivirus database    
     # pathlib.Path(av_check)
@@ -143,28 +206,23 @@ def av_run(av_config):
     av_log_file = f"{av_config['av_logs_root']}_{av_config['av_accession']}_{av_run_date}.txt"
     av_check = f"{av_config['av_dir']}/{av_config['av_clamav']} --recursive \"{av_config['av_location']}\" -v -a -l {av_log_file}"
     print(f"Antivirus check: {av_check}", end='... ')
-    #
-    # Testing the command line for AV. Remove after testing.
-    if av_config['run_it'].upper() != "FALSE":
-        result = subprocess.run(av_check, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    result = subprocess.run(av_check, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("done.")
 
     # Preparing to check the amount of infected files
     print(f"Writing ClamAV output file {av_log_file}", end='... ')
-    if av_config['run_it'].upper() != "FALSE":
-        try:
-
-            with open(av_log_file, 'w', encoding="utf-8") as ff:
-                ff.writelines(result.stdout)
-            print("done.")
-            is_infected = check_infected(result.stdout)
-            if is_infected:
-                print("Caution!!!Possible infection!!!!")
-                print("Aborting execution.")
-                sys.exit(1)
-        except:
-            print(f"Error writing ClamAV logs.")
+    try:
+        with open(av_log_file, 'w', encoding="utf-8") as ff:
+            ff.writelines(result.stdout)
+        print("done.")
+        is_infected = check_infected(result.stdout)
+        if is_infected:
+            logging.critical("Caution!!!Possible infection!!!!")
+            logging.critical("Aborting execution.")
             sys.exit(1)
+    except:
+        logging.error(f"Error writing ClamAV logs.")
+        sys.exit(1)
 
 def copy_src_dirs(source_dir, dest_dir):
     """Copy files from source directory to destination. The source can be multiple folders"""
