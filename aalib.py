@@ -160,7 +160,7 @@ def av_check(av_config):
     # Check if there is a file with the previous check, if "yes", then check if the 
     # quarantine has expired before continuing.
 
-    clamav_quarentine_file = os.path.join(av_config['quarentine_dir'], 
+    clamav_quarentine_file = os.path.join(av_config['quarantine_dir'], 
         av_config['av_accession'])
     
     if not os.path.isfile(clamav_quarentine_file):
