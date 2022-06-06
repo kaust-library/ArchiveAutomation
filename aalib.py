@@ -166,7 +166,7 @@ def av_check(av_config):
     if not os.path.isfile(clamav_quarentine_file):
         logging.info(f'Quarentine file {clamav_quarentine_file} not found. Running first scan')
         _ = av_run(av_config)
-        av_run_date = datetime.today().strftime("%Y-%m-%d")
+        av_run_date = DT.datetime.today().strftime("%Y-%m-%d")
         clamav_status_line = f"{av_config['quarantine_days']}:{av_run_date}"
         with open(clamav_quarentine_file, 'w', encoding="utf-8") as ff_av:
             ff_av.write(clamav_status_line)
