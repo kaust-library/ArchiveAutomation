@@ -189,7 +189,7 @@ def av_run(av_config):
 
     # The date when we run the antivirus check that will be used to form
     # the name of the output file of the run.
-    av_run_date = datetime.today().strftime("%Y%m%d")
+    av_run_date = DT.datetime.today().strftime("%Y%m%d")
 
     # Update the antivirus database    
     # pathlib.Path(av_check)
