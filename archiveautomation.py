@@ -34,14 +34,15 @@ def aaflow(input):
     config._interpolation = configparser.ExtendedInterpolation()
     config.read(input.name)
 
-    # Adding variables to the antivirus section so we have everything 
-    # we need in a single place before calling the function.
-    config['CLAMAV'].update({'av_location': config['BAGGER']['source_dir']})
-    config['CLAMAV'].update({'av_accession': config['ACCESSION']['accession_id']})
-    # HACK: adding quarantine dir to CLAMAV config. The quarantine dir should be
-    # define in one of the configuration files (which one? Which section?).
-    config['CLAMAV'].update({'quarantine_dir': quarantine})
-    _ = aalib.av_check(config['CLAMAV'])
+    if config['CLAMAV']['run_it'].upper() == "TRUE":
+        # Adding variables to the antivirus section so we have everything 
+        # we need in a single place before calling the function.
+        config['CLAMAV'].update({'av_location': config['BAGGER']['source_dir']})
+        config['CLAMAV'].update({'av_accession': config['ACCESSION']['accession_id']})
+        # HACK: adding quarantine dir to CLAMAV config. The quarantine dir should be
+        # define in one of the configuration files (which one? Which section?).
+        config['CLAMAV'].update({'quarantine_dir': quarantine})
+        _ = aalib.av_check(config['CLAMAV'])
 
     #
     # Define variables for convinience only.
