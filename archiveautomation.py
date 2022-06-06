@@ -41,7 +41,7 @@ def aaflow(input):
         config['CLAMAV'].update({'av_accession': config['ACCESSION']['accession_id']})
         # HACK: adding quarantine dir to CLAMAV config. The quarantine dir should be
         # define in one of the configuration files (which one? Which section?).
-        config['CLAMAV'].update({'quarantine_dir': quarantine})
+        config['CLAMAV'].update({'quarantine_dir': 'quarantine'})
         _ = aalib.av_check(config['CLAMAV'])
 
     #
