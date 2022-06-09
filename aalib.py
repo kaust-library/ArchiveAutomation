@@ -207,12 +207,12 @@ def av_run(av_config):
     clamav_bin_file = pathlib.Path( av_config['av_dir'], av_config['av_clamav'] )
     av_check = f" {clamav_bin_file} --recursive \"{av_config['av_location']}\" -v -a -l \"{av_log_file}\""
     av_cleck_list = av_check.split()
-    logging.info(av_cleck_list)
+    print(f"av_cleck_list: {av_cleck_list}")
     print(f"Antivirus check: {av_check}", end='... ')
     result = subprocess.run(av_cleck_list, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("done.")
 
-    print(result.stdout)
+    print(f"clamav log: {result.stdout})
 
     # Preparing to check the amount of infected files
     print(f"Writing ClamAV output file {av_log_file}", end='... ')
