@@ -204,7 +204,7 @@ def av_run(av_config):
     # Antivirus command line
 
     av_log_file = f"{av_config['av_logs_root']}_{av_config['av_accession']}_{av_run_date}.txt"
-    av_check = f"{av_config['av_dir']}/{av_config['av_clamav']} --recursive \"{av_config['av_location']}\" -v -a -l {av_log_file}"
+    av_check = f" os.path.join( {av_config['av_dir']}, {av_config['av_clamav']} ) --recursive \"{av_config['av_location']}\" -v -a -l {av_log_file}"
     print(f"Antivirus check: {av_check}", end='... ')
     result = subprocess.run(av_check, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("done.")
