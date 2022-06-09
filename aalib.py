@@ -223,8 +223,8 @@ def av_run(av_config):
             logging.critical("Caution!!!Possible infection!!!!")
             logging.critical("Aborting execution.")
             sys.exit(1)
-    except:
-        logging.error(f"Error writing ClamAV logs.")
+    except Exception as ee:
+        logging.error(f"Error {ee} writing ClamAV logs.")
         sys.exit(1)
 
 def copy_src_dirs(source_dir, dest_dir):
