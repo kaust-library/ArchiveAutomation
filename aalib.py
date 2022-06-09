@@ -205,9 +205,11 @@ def av_run(av_config):
 
     av_log_file = f"{av_config['av_logs_root']}_{av_config['av_accession']}_{av_run_date}.txt"
     clamav_bin_file = pathlib.Path( av_config['av_dir'], av_config['av_clamav'] )
-    av_check = f" {clamav_bin_file} --recursive {av_config['av_location']} -v -a -l {av_log_file}"
+    av_check = f" {clamav_bin_file} --recursive \"{av_config['av_location']}\" -v -a -l \"{av_log_file}\""
+    av_cleck_list = av_check.split()
+    logging.info(av_cleck_list)
     print(f"Antivirus check: {av_check}", end='... ')
-    result = subprocess.run(av_check, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    result = subprocess.run(av_check_list, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("done.")
 
     # Preparing to check the amount of infected files
