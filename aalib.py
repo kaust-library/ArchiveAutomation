@@ -209,7 +209,7 @@ def av_run(av_config):
     av_cleck_list = av_check.split()
     logging.info(av_cleck_list)
     print(f"Antivirus check: {av_check}", end='... ')
-    result = subprocess.run(av_check_list, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    result = subprocess.run(av_cleck_list, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("done.")
 
     # Preparing to check the amount of infected files
