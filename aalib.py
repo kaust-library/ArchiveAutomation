@@ -212,7 +212,7 @@ def av_run(av_config):
     result = subprocess.run(av_cleck_list, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("done.")
 
-    print(f"clamav log: {result.stdout})
+    print(f"clamav log: {result.stdout}")
 
     # Preparing to check the amount of infected files
     print(f"Writing ClamAV output file {av_log_file}", end='... ')
