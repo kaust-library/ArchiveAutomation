@@ -209,8 +209,8 @@ def av_run(av_config):
     except OSError as ee:
         logging.critical(f"Error {ee} changing to {av_config['av_dir']} ")
         sys.exit(1)
-    clamav_bin_file = f"\.{av_config['av_clamav']}"
-    av_check = f" {clamav_bin_file} --recursive \"{av_config['av_location']}\" -v -a -l \"{av_log_file}\""
+    clamav_bin_file = f".\{av_config['av_clamav']}"
+    av_check = f"{clamav_bin_file} --recursive \"{av_config['av_location']}\" -v -a -l \"{av_log_file}\""
     print(f"Antivirus check: {av_check}", end='... ')
     result = subprocess.run(av_check, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     print("done.")
