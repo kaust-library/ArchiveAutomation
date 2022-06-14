@@ -162,6 +162,8 @@ def av_check(av_config):
 
     clamav_quarentine_file = os.path.join(av_config['quarantine_dir'], 
         av_config['av_accession'])
+        
+    clamav_quarentine_file = os.path.join(os.getcwd(), clamav_quarentine_file)
     
     if not os.path.isfile(clamav_quarentine_file):
         logging.info(f'Quarentine file {clamav_quarentine_file} not found. Running first scan')
@@ -210,20 +212,21 @@ def av_run(av_config):
         logging.critical(f"Error {ee} changing to {av_config['av_dir']} ")
         sys.exit(1)
     clamav_bin_file = f".\{av_config['av_clamav']}"
-    av_check = f"{clamav_bin_file} --recursive \"{av_config['av_location']}\" -v -a -l \"{av_log_file}\""
+    av_check = f"{clamav_bin_file} --recursive \"{av_config['av_location']}\" --log \"{av_log_file}\""
     print(f"Antivirus check: {av_check}", end='... ')
-    result = subprocess.run(av_check, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    result = subprocess.Popen(av_check, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding="utf-8")
+    av_log = result.stdout.read()
     print("done.")
-
-    print(f"clamav log: {result.stdout}")
 
     # Preparing to check the amount of infected files
     print(f"Writing ClamAV output file {av_log_file}", end='... ')
     try:
         with open(av_log_file, 'w', encoding="utf-8") as ff:
-            ff.writelines(result.stdout)
-        print("done.")
-        is_infected = check_infected(result.stdout)
+            ff.writelines(av_log)
+        print("\ndone.")
+
+        print(f"Checking for infected files")
+        is_infected = check_infected(av_log)
         if is_infected:
             logging.critical("Caution!!!Possible infection!!!!")
             logging.critical("Aborting execution.")
