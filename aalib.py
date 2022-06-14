@@ -204,7 +204,12 @@ def av_run(av_config):
     # Antivirus command line
 
     av_log_file = os.path.join(av_config['av_logs_root'], f"{av_config['av_accession']}_{av_run_date}.txt")
-    clamav_bin_file = pathlib.Path( av_config['av_dir'], av_config['av_clamav'] )
+    try:
+        os.chdir(av_clamav['av_dir'])
+    except OSError as ee:
+        logging.critical(f"Error {ee} changing to {av_clamav['av_dir']} ")
+        sys.exit(1)
+    clamav_bin_file = f"\.{av_config['av_clamav']}"
     av_check = f" {clamav_bin_file} --recursive \"{av_config['av_location']}\" -v -a -l \"{av_log_file}\""
     print(f"Antivirus check: {av_check}", end='... ')
     result = subprocess.run(av_check, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
