@@ -4,16 +4,13 @@
 # The file is uploaded to Preservica
 
 import sys
-#import requests
-#import bagit
 import pathlib
-#import shutil
 import configparser
 import aalib
 import click
-#from datetime import datetime
+import logging
 from dotenv import load_dotenv
-#from dcxml import simpledc
+
 
 @click.command()
 @click.argument('input', type=click.File('r'))
@@ -30,6 +27,8 @@ def aaflow(input):
     * Jhove configuration
      """
 
+    logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
+    
     config = configparser.ConfigParser()
     config._interpolation = configparser.ExtendedInterpolation()
     config.read(input.name)

@@ -1,5 +1,7 @@
 venv
 
+quarantine
+
 *.cfg
 
 archiveautomation.egg-info
