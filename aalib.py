@@ -205,6 +205,7 @@ def av_run(av_config):
 
     av_log_file = os.path.join(av_config['av_logs_root'], f"{av_config['av_accession']}_{av_run_date}.txt")
     try:
+        cur_dir = os.getcwd()
         os.chdir(av_config['av_dir'])
     except OSError as ee:
         logging.critical(f"Error {ee} changing to {av_config['av_dir']} ")
@@ -217,6 +218,9 @@ def av_run(av_config):
 
     print(f"clamav log: {result.stdout}")
 
+    # Return to old directory
+    logging.info(f"Returning to previous directory {cur_dir}")
+    os.chdir(cur_dir)
     # Preparing to check the amount of infected files
     print(f"Writing ClamAV output file {av_log_file}", end='... ')
     try:
