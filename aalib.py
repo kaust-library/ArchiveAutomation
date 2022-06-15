@@ -219,14 +219,13 @@ def av_run(av_config):
     av_log = result.stdout.read()
     print("done.")
 
-<<<<<<< HEAD
-    print(f"clamav log: {result.stdout}")
-
-    # Return to old directory
-    logging.info(f"Returning to previous directory {cur_dir}")
-    os.chdir(cur_dir)
-=======
->>>>>>> 63643e581cc2b9c8f930d3eed1a8011b3a793060
+    try:
+        os.chdir(cur_dir)
+        logging.info(f"Returned to previous directory {cur_dir}")
+    except OSError as ee:
+        logging.critical(f"Failed to return to {cur_dir} with error {ee}")
+        sys.exit(1)
+        
     # Preparing to check the amount of infected files
     print(f"Writing ClamAV output file {av_log_file}", end='... ')
     try:
