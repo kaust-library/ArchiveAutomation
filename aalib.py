@@ -419,10 +419,13 @@ def get_api_headers():
 def get_api_conf(my_config):
     """Get API configuration details, and return a dictionary."""
 
+    print(f"API config: {my_config}")
     api_config = configparser.ConfigParser()
     api_config.read(my_config)
+    print(f"sections: {api_config.sections()}")
+        
+    print(f"url: {api_config['API']['url']}")
     try:
-
         my_conf = {
             'url': api_config['API']['url'],
             'client_id': api_config['API']['client_id'],
@@ -430,6 +433,8 @@ def get_api_conf(my_config):
             'username': api_config['API']['username'],
             'database': api_config['API']['database']
         }
+        
+        print(f"URL: {url}, client_id: {client_id}, grant_type: {grant_type}, database: {database}")
     except KeyError as ke:
         print('Key error reading API config')
         print(ke)

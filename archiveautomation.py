@@ -3,6 +3,7 @@
 # Create a "BagIt" file
 # The file is uploaded to Preservica
 
+import os
 import sys
 import pathlib
 import configparser
@@ -58,7 +59,7 @@ def aaflow(input):
     #
     # Define a dictionary with details of the API.
     # TODO: Config file can be defined as command line argument.
-    api_config = pathlib.Path('etc/archiveautomation.cfg')
+    api_config = os.path.join('etc', 'archiveautomation.cfg')
     my_api_conf = aalib.get_api_conf(api_config)
 
     if not my_api_conf:
