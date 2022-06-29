@@ -441,14 +441,12 @@ def get_api_conf(my_config):
             'username': api_config['API']['username'],
             'database': api_config['API']['database']
         }
-        
-        print(f"URL: {url}, client_id: {client_id}, grant_type: {grant_type}, database: {database}")
     except KeyError as ke:
         print('Key error reading API config')
         print(ke)
         my_conf = {}
-    except:
-        print("Error reading API config file.")
+    except Exception as ee:
+        print(f"Error reading API config file: {ee}")
         my_conf = {}
     return my_conf
 
