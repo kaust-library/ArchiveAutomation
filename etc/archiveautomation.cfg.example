@@ -8,8 +8,3 @@ client_id = 'api_client'
 grant_type = 'my grant type'
 username = 'my API user'
 database = 'my database'
-
-[QUARANTINE]
-quarantine_dir = quarantine
-# Quarantine duration.
-quarantine_days = 30
