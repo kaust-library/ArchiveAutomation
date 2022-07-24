@@ -320,6 +320,8 @@ def archivera_to_bagit(Archivera_BagIt, my_accession, bag_path):
 
     # HACK #2. Probably this part also need to for exception.
     # Update BagIt metadata
+    print(f"my_accession: {my_accession}")
+    
     for kk in Archivera_BagIt.keys():
         items_display = len(my_accession['records'][0][kk])
         if items_display > 1:
@@ -394,6 +396,8 @@ def get_accession(my_api_conf, my_headers, dt_acc):
     dt_acc['page-size'] = 10
 
     my_accession = requests.get(acc_url, headers=my_headers, params=dt_acc)
+
+    logging.debug(f"\nAccession {str(my_accession)} after API.")
 
     return my_accession.json()
 

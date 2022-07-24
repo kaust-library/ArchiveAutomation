@@ -98,6 +98,8 @@ def aaflow(input):
 
     my_accession = aalib.get_accession(my_api_conf, my_headers, dt_acc)
 
+    logging.debug(f"\nmy_accession: {my_accession}")
+
     # Create BagIt file
     my_bag = aalib.archivera_to_bagit(Archivera_BagIt, my_accession, bag_path)
 
