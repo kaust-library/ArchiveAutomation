@@ -124,3 +124,6 @@ def aaflow(input):
 
     # The End
     print('Have a nice day.')
+
+if __name__ == '__main__':
+    aaflow()
