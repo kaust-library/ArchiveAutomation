@@ -29,7 +29,7 @@ def aaflow(input):
     * Jhove configuration
      """
 
-    logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
+    logging.basicConfig(encoding='utf-8', level=logging.INFO)
     
     config = configparser.ConfigParser()
     config._interpolation = configparser.ExtendedInterpolation()
