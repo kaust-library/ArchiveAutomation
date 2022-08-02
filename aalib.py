@@ -167,7 +167,7 @@ def av_check(av_config):
     
     if not os.path.isfile(clamav_quarentine_file):
         logging.info(f'Quarentine file {clamav_quarentine_file} not found. Running first scan')
-        _ = av_run(av_config)
+        av_run_code = av_run(av_config)
         av_run_date = DT.datetime.today().strftime("%Y-%m-%d")
         clamav_status_line = f"{av_config['quarantine_days']}:{av_run_date}"
         with open(clamav_quarentine_file, 'w', encoding="utf-8") as ff_av:
@@ -181,9 +181,13 @@ def av_check(av_config):
             sys.exit(0)
         else:
             logging.info(f"Quarantine of accession {av_config['av_accession']} is over")
-            _ = av_run(av_config)
-            # TODO: if quarantine is over, probably we can remove the quarantine file, 'clamav_quarentine_file'
-
+            av_run_code = av_run(av_config)
+            if av_run_code == 0:
+                # Assuming that the quarantine finished, and we completed the 
+                # second scan of files, then we can remove the quarantine file.
+                logging.info(f'Removing {clamav_quarentine_file} after 2nd scan')
+                os.remove(clamav_quarentine_file)
+                
 def av_run(av_config):
     """Run the 'clamav' antivirus. The output is ClamAV log file, saved in 'av_logs_root' directory
     specified in the 'CLAMAV' session of the configuration file. If the ClamAV log file reports an
@@ -242,6 +246,8 @@ def av_run(av_config):
     except Exception as ee:
         logging.error(f"Error {ee} writing ClamAV logs.")
         sys.exit(1)
+    else:
+        return 0
 
 def copy_src_dirs(source_dir, dest_dir):
     """Copy files from source directory to destination. The source can be multiple folders"""
