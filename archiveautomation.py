@@ -24,6 +24,7 @@ def aaflow(input):
     The INPUT contains the 
     * accession number, 
     * collection, 
+    * ClamAV configuration,
     * Droid configuration,
     * Jhove configuration
      """
@@ -120,7 +121,6 @@ def aaflow(input):
 
     # Run Jhove on the "bag" folder
     _ = aalib.jhove_run(config['JHOVE'], bag_path, acc_number)
-
 
     # The End
     print('Have a nice day.')
