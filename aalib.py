@@ -182,11 +182,17 @@ def av_check(av_config):
         else:
             logging.info(f"Quarantine of accession {av_config['av_accession']} is over")
             av_run_code = av_run(av_config)
-            if av_run_code == 0:
-                # Assuming that the quarantine finished, and we completed the 
-                # second scan of files, then we can remove the quarantine file.
-                logging.info(f'Removing {clamav_quarentine_file} after 2nd scan')
-                os.remove(clamav_quarentine_file)
+            # if av_run_code == 0:
+                # # Assuming that the quarantine finished, and we completed the 
+                # # second scan of files, then we can remove the quarantine file.
+                # logging.info(f'Removing {clamav_quarentine_file} after 2nd scan')
+                # os.remove(clamav_quarentine_file)
+
+            # 
+            # Returning the code of ClamAV check to parent routine. Here is causing problems
+            # when the file is removed but the destination dir already exists and the script
+            # stops. When we run the script again, the quarantine restarts!
+            return av_run_code, clamav_quarentine_file
                 
 def av_run(av_config):
     """Run the 'clamav' antivirus. The output is ClamAV log file, saved in 'av_logs_root' directory

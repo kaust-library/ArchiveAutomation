@@ -43,7 +43,7 @@ def aaflow(input):
         # HACK: adding quarantine dir to CLAMAV config. The quarantine dir should be
         # define in one of the configuration files (which one? Which section?).
         config['CLAMAV'].update({'quarantine_dir': 'quarantine'})
-        _ = aalib.av_check(config['CLAMAV'])
+        av_check_code, av_quarentine_file = aalib.av_check(config['CLAMAV'])
 
     #
     # Define variables for convinience only.
@@ -121,6 +121,11 @@ def aaflow(input):
 
     # Run Jhove on the "bag" folder
     _ = aalib.jhove_run(config['JHOVE'], bag_path, acc_number)
+
+    # If the return code from the antivirus is '0', then the second scan
+    # finished sucessfully and we can erase the quarantine file.
+    logging.info(f"Removing quarantine file '{av_quarentine_fi}'")
+    os.remove(av_quarentine_file)
 
     # The End
     print('Have a nice day.')
