@@ -124,7 +124,7 @@ def aaflow(input):
 
     # If the return code from the antivirus is '0', then the second scan
     # finished sucessfully and we can erase the quarantine file.
-    logging.info(f"Removing quarantine file '{av_quarentine_fi}'")
+    logging.info(f"Removing quarantine file '{av_quarentine_file}'")
     os.remove(av_quarentine_file)
 
     # The End
