@@ -63,7 +63,7 @@ accession_id = 013_002_0026
 av_dir = C:\Program Files\ClamAV
 av_update = freshclam.exe
 av_clamav = clamscan.exe
-av_logs_root = C:\Users\Desktop\Eamon Smallwood\clamscanlogs\clamAVlog
+av_logs_root = C:\Users\Desktop\joe\clamscanlogs\clamAVlog
 quarantine_days = 30
 # Doesn't actually run the AV command, just print it.
 run_it = false
