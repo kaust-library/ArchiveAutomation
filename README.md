@@ -59,6 +59,15 @@ An example of input file
 [ACCESSION]
 accession_id = 013_002_0026
 
+[CLAMAV]
+av_dir = C:\Program Files\ClamAV
+av_update = freshclam.exe
+av_clamav = clamscan.exe
+av_logs_root = C:\Users\Desktop\Eamon Smallwood\clamscanlogs\clamAVlog
+quarantine_days = 30
+# Doesn't actually run the AV command, just print it.
+run_it = false
+
 [BAGGER]
 # You can specify a comma separated list of directories as source: dir1, dir2, ...
 source_dir = C:\Users\joe\pictures\boat_trip_pictures, C:\Users\joe\Work\documents
