@@ -92,7 +92,7 @@ Both sessions for [Droid](https://www.nationalarchives.gov.uk/information-manage
 Once the input file is ready, simply call the script with the input file as parameter.
 
 ```
-(venv) PS C:\Users\garcm0b\Work\ArchiveAutomation> archiveautomation .\my_accession.cfg
+(venv) PS C:\Users\garcm0b\Work\ArchiveAutomation> python archiveautomation.py .\my_accession.cfg
 Have a nice day.
 (venv) mgarcia@wsl2:~/Documents/Work/ArchiveAutomation$
 ```
