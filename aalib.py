@@ -215,7 +215,7 @@ def av_run(av_config):
 
     # Antivirus command line
 
-    av_log_file = os.path.join(av_config['av_logs_root'], f"{av_config['av_accession']}_{av_run_date}.txt")
+    av_log_file = os.path.join(av_config['av_logs_root'], f"clamAVlog{av_config['av_accession']}_{av_run_date}.txt")
     try:
         cur_dir = os.getcwd()
         os.chdir(av_config['av_dir'])
