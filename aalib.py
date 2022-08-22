@@ -176,11 +176,11 @@ def av_check(av_config):
     #clamav_quarentine_file = os.path.join(av_config['quarantine_dir'], 
     #    av_config['av_accession'])
 
-    clamav_quarentine_file = pathlib.WindowsPath(os.getcwd()).\
-        joinpath(av_config['quarantine_dir']).\
-        joinpath(av_config['av_accession'])
+    clamav_quarentine_file = pathlib.Path(pathlib.Path.cwd())\
+        .joinpath(av_config['quarantine_dir'])\
+        .joinpath(av_config['av_accession'])
     
-    if not clamav_quarentine_file.isfile():
+    if not clamav_quarentine_file.is_file():
         logging.info(f'Quarentine file {clamav_quarentine_file} not found. Running first scan')
         av_run_code = av_run(av_config)
         av_run_date = DT.datetime.today().strftime("%Y-%m-%d")
