@@ -160,12 +160,27 @@ def av_check(av_config):
     # Check if there is a file with the previous check, if "yes", then check if the 
     # quarantine has expired before continuing.
 
-    clamav_quarentine_file = os.path.join(av_config['quarantine_dir'], 
-        av_config['av_accession'])
-        
-    clamav_quarentine_file = os.path.join(os.getcwd(), clamav_quarentine_file)
+    try:
+        qq_dir = pathlib.Path(av_config['quarantine_dir'])
+        if not qq_dir.exists():
+            logging.info(f"Creating quarantine directory 'qq_dir'")
+            qq_dir.mkdir()
+    except FileNotFoundError as ee:
+        logging.error(f"A parent directory for {qq_dir} is missing in the path")
+    except Exception as ee:
+        logging.error(f"Error {ee} while creating quarantine directory {qq_dir}")
+        av_run_code = 99
+        clamav_quarentine_file = None
+        return av_run_code, clamav_quarentine_file
+
+    #clamav_quarentine_file = os.path.join(av_config['quarantine_dir'], 
+    #    av_config['av_accession'])
+
+    clamav_quarentine_file = pathlib.WindowsPath(os.getcwd()).\
+        joinpath(av_config['quarantine_dir']).\
+        joinpath(av_config['av_accession'])
     
-    if not os.path.isfile(clamav_quarentine_file):
+    if not clamav_quarentine_file.isfile():
         logging.info(f'Quarentine file {clamav_quarentine_file} not found. Running first scan')
         av_run_code = av_run(av_config)
         av_run_date = DT.datetime.today().strftime("%Y-%m-%d")
