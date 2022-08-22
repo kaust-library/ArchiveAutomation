@@ -163,7 +163,7 @@ def av_check(av_config):
     try:
         qq_dir = pathlib.Path(av_config['quarantine_dir'])
         if not qq_dir.exists():
-            logging.info(f"Creating quarantine directory 'qq_dir'")
+            logging.info(f"Creating quarantine directory '{qq_dir}'")
             qq_dir.mkdir()
     except FileNotFoundError as ee:
         logging.error(f"A parent directory for {qq_dir} is missing in the path")
