@@ -17,30 +17,48 @@ from dcxml import simpledc
 
 
 
-def jhove_run(jhove_config, bag_path, acc_number):
+def jhove_run(jhove_config, jhove_modules, bag_path, acc_number):
     """Run Jhove"""
 
     jhove_exec_path = os.path.join(jhove_config['jhove_dir'], jhove_config['jhove_bin'])
 
-    # Notice the extension to file name is missing. This will be added later.
-    jhove_out_fname = os.path.join(bag_path, f"jhove_{acc_number}")
-
     bag_path_data = os.path.join(bag_path, "data")
 
-    if jhove_config['jhove_xml'].upper() == "TRUE":
-        jhove_cmd = f"{jhove_exec_path} -h xml -o {jhove_out_fname}.xml -m {jhove_config['jhove_module']} -kr {bag_path_data}"
-    else:
-        jhove_cmd = f"{jhove_exec_path} -o {jhove_out_fname}.txt -m {jhove_config['jhove_module']} -kr {bag_path_data}"
+    # Items are the module name and its value, like "[('aiff-hul', 'True'),..."
+    jhove_items = jhove_modules.items()
 
-    try:
-        print(f"Running jhove {jhove_cmd}")
-        result = subprocess.run(jhove_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-        result.check_returncode()
-        print(result.stdout)
-    except FileNotFoundError as ee:
-        print(f"File not found error: {ee}")
-    except Exception as ee: 
-        print(f"Generic Error running jhove: {ee}")
+    # List of modules to be used (i.e., value is 'true')
+    jhove_mod_list  = [kk for (kk, vv) in jhove_items if jhove_modules.getboolean(kk)]
+
+    for jj in jhove_mod_list:
+
+        # Module name, the 'aiff' part of 'aiff-hul'
+        mod_name = jj.split('-')[0]
+
+        jhove_out_fname = os.path.join(bag_path, f"jhove_{acc_number}_{mod_name}")
+
+        if jhove_config.getboolean('jhove_xml'):
+            jhove_cmd = f"{jhove_exec_path} -h xml -o {jhove_out_fname}.xml -m {jj} -kr {bag_path_data}"
+        else:
+            jhove_cmd = f"{jhove_exec_path} -o {jhove_out_fname}.txt -m {jj} -kr {bag_path_data}"
+    
+        try:
+            print(f"Running jhove {jhove_cmd}")
+            result = subprocess.run(jhove_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+            result.check_returncode()
+            print(result.stdout)
+        except FileNotFoundError as ee:
+            print(f"File not found error: {ee}")
+            jj_return = 99
+            break
+        except Exception as ee: 
+            print(f"Generic Error running jhove: {ee}")
+            jj_return = 99
+            break
+        else:
+            jj_return = 0
+
+    return jj_return
 
 def droid_run(droid_config, bag_path, acc_number):
     """Run Droid on the destination folder"""
