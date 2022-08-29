@@ -120,7 +120,7 @@ def aaflow(input):
 
 
     # Run Jhove on the "bag" folder
-    _ = aalib.jhove_run(config['JHOVE'], bag_path, acc_number)
+    _ = aalib.jhove_run(config['JHOVE'], config['JHOVE MODULES'], bag_path, acc_number)
 
     # If the return code from the antivirus is '0', then the second scan
     # finished sucessfully and we can erase the quarantine file.
