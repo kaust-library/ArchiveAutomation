@@ -28,7 +28,21 @@ droid_bin = droid.bat
 keep_profile = true
 
 [JHOVE]
-jhove_dir = C:\Users\user1\Work\jhove
+jhove_dir = C:\Users\garcm0b\Work\jhove
 jhove_bin = jhove.bat
-jhove_module = jpeg-hul
 jhove_xml = true
+
+[JHOVE MODULES]
+AIFF-hul     = False
+ASCII-hul    = False
+GIF-hul      = False
+GZip-kb      = False
+HTML-hul     = False
+JPEG-hul     = False
+JPEG2000-hul = False
+PDF-hul      = False
+TIFF-hul     = False
+UTF8-hul     = False
+WARC-kb      = False
+WAVE-hul     = False
+XML-hul      = False
