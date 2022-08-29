@@ -38,7 +38,7 @@ def jhove_run(jhove_config, bag_path, acc_number):
         result.check_returncode()
         print(result.stdout)
     except FileNotFoundError as ee:
-        print(f"Error running jhove command: {ee}")
+        print(f"File not found error: {ee}")
     except Exception as ee: 
         print(f"Generic Error running jhove: {ee}")
 
