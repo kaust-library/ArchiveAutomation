@@ -57,7 +57,13 @@ An example of input file
 # 
 
 [ACCESSION]
-accession_id = 013_002_0026
+accession_id = 999_999_9999
+
+[BAGGER]
+# You can specify a comma separated list of directories as source: dir1, dir2, ...
+source_dir = C:\Users\user1\Work\boat_trip_pictures, C:\Users\user1\Work\my_event_1
+# Using Python ExtendedInterpolation to use the 'accession_id' as target directory
+dest_dir = C:\Users\user1\Work\${ACCESSION:accession_id}
 
 [CLAMAV]
 av_dir = C:\Program Files\ClamAV
@@ -68,23 +74,32 @@ quarantine_days = 30
 # Doesn't actually run the AV command, just print it.
 run_it = false
 
-[BAGGER]
-# You can specify a comma separated list of directories as source: dir1, dir2, ...
-source_dir = C:\Users\joe\pictures\boat_trip_pictures, C:\Users\joe\Work\documents
-# Using Python ExtendedInterpolation to use the 'accession_id' as target directory
-dest_dir = C:\Users\joe\Work\${ACCESSION:accession_id}
-
 [DROID]
-droid_dir = C:\Users\joe\Work\Droid\droid
+droid_dir = C:\Users\user1\Work\Droid\my_droid
 droid_bin = droid.bat
 # The profile is the database with the metadata in binary format. 
+# We just want the csv file, so we remove the profile.
 keep_profile = true
 
 [JHOVE]
-jhove_dir = C:\Users\joe\Work\jhove
+jhove_dir = C:\Users\garcm0b\Work\jhove
 jhove_bin = jhove.bat
-jhove_module = jpeg-hul
 jhove_xml = true
+
+[JHOVE MODULES]
+AIFF-hul     = False
+ASCII-hul    = False
+GIF-hul      = False
+GZip-kb      = False
+HTML-hul     = False
+JPEG-hul     = False
+JPEG2000-hul = False
+PDF-hul      = False
+TIFF-hul     = False
+UTF8-hul     = False
+WARC-kb      = False
+WAVE-hul     = False
+XML-hul      = False
 ```
 
 > The `BAGGER:dest_dir` can't exist, otherwise the script will stop. By default, the directory name will be accession number, but it can be customized by the user. Like:
