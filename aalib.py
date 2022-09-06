@@ -30,6 +30,8 @@ def jhove_run(jhove_config, jhove_modules, bag_path, acc_number):
     # List of modules to be used (i.e., value is 'true')
     jhove_mod_list  = [kk for (kk, vv) in jhove_items if jhove_modules.getboolean(kk)]
 
+    # Return code
+    jj_return = 0
     for jj in jhove_mod_list:
 
         # Module name, the 'aiff' part of 'aiff-hul'
