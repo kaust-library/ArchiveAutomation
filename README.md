@@ -2,6 +2,8 @@
 
 ![Digital Preservation Workflow](pictures/Preservation_ingest_workflow.png)
 
+[![DOI](https://zenodo.org/badge/424499129.svg)](https://zenodo.org/badge/latestdoi/424499129)
+
 Automate the digital preservation workflow. 
 
 The workflow have the following steps:
