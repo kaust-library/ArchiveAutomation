@@ -35,7 +35,7 @@ def aaflow(input):
     config._interpolation = configparser.ExtendedInterpolation()
     config.read(input.name)
 
-    if config['CLAMAV']['run_it'].upper() == "TRUE":
+    if config['CLAMAV'].getboolean('run_it'):
         # Adding variables to the antivirus section so we have everything 
         # we need in a single place before calling the function.
         config['CLAMAV'].update({'av_location': config['BAGGER']['source_dir']})
@@ -123,9 +123,11 @@ def aaflow(input):
     _ = aalib.jhove_run(config['JHOVE'], config['JHOVE MODULES'], bag_path, acc_number)
 
     # If the return code from the antivirus is '0', then the second scan
-    # finished sucessfully and we can erase the quarantine file.
-    logging.info(f"Removing quarantine file '{av_quarentine_file}'")
-    os.remove(av_quarentine_file)
+    # finished sucessfully and we can erase the quarantine file, but ignore
+    # the file if we are not running the anti-virus part.
+    if config['CLAMAV'].getboolean('run_it'):
+        logging.info(f"Removing quarantine file '{av_quarentine_file}'")
+        os.remove(av_quarentine_file)
 
     # The End
     print('Have a nice day.')

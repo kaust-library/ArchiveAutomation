@@ -102,7 +102,7 @@ def droid_run(droid_config, bag_path, acc_number):
 
     try:
         # DEBUG
-        if droid_config['keep_profile'].upper() == "FALSE":
+        if not droid_config.getboolean('keep_profile'):
             print(f"Removing droid profile {acc_number}.droid")
             os.remove(f"{acc_number}.droid")
     except FileNotFoundError as ff:
