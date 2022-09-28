@@ -1,48 +1,44 @@
-#
-# Configuration file for the digital preservation workflow
-# 
-
 [ACCESSION]
-accession_id = 999_999_9999
+accession_id = 000_000_0000
 
 [BAGGER]
 # You can specify a comma separated list of directories as source: dir1, dir2, ...
-source_dir = C:\Users\user1\Work\boat_trip_pictures, C:\Users\user1\Work\my_event_1
+source_dir = C:\Users\joe\Work\boat_trip_pictures, C:\Users\joe\Work\my_event_1
 # Using Python ExtendedInterpolation to use the 'accession_id' as target directory
-dest_dir = C:\Users\user1\Work\${ACCESSION:accession_id}
+dest_dir = C:\Users\joe\Work\${ACCESSION:accession_id}
+# If 'false' the script will stop the the destination directory already exists.
 
 [CLAMAV]
 av_dir = C:\Program Files\ClamAV
 av_update = freshclam.exe
 av_clamav = clamscan.exe
-av_logs_root = C:\Users\Desktop\joe\clamscanlogs\clamAVlog
+av_logs_root = C:\Users\Desktop\john\clamscanlogs\clamAVlog
 quarantine_days = 30
 # Doesn't actually run the AV command, just print it.
-run_it = false
+run_it = no
 
 [DROID]
-droid_dir = C:\Users\user1\Work\Droid\my_droid
+droid_dir = C:\Users\joe\Downloads\droid-binary-6.5.2-bin-win32-with-jre
 droid_bin = droid.bat
 # The profile is the database with the metadata in binary format. 
-# We just want the csv file, so we remove the profile.
-keep_profile = true
+keep_profile = yes
 
 [JHOVE]
-jhove_dir = C:\Users\garcm0b\Work\jhove
+jhove_dir = C:\Users\joe\Work\jhove
 jhove_bin = jhove.bat
-jhove_xml = true
+jhove_xml = yes
 
 [JHOVE MODULES]
-AIFF-hul     = False
-ASCII-hul    = False
-GIF-hul      = False
-GZip-kb      = False
-HTML-hul     = False
-JPEG-hul     = False
-JPEG2000-hul = False
-PDF-hul      = False
-TIFF-hul     = False
-UTF8-hul     = False
-WARC-kb      = False
-WAVE-hul     = False
-XML-hul      = False
+AIFF-hul     = no
+ASCII-hul    = no
+GIF-hul      = no
+GZip-kb      = no
+HTML-hul     = no
+JPEG-hul     = yes
+JPEG2000-hul = no
+PDF-hul      = no
+TIFF-hul     = no
+UTF8-hul     = no
+WARC-kb      = no
+WAVE-hul     = no
+XML-hul      = no
