@@ -121,6 +121,9 @@ def check_infected(av_output):
     infect_line = text[-6]
     scanned_files = total_line.split()[-1]
     infect_field, infect_num = infect_line.split()[0], infect_line.split()[2]
+    if int(scanned_files) == 0:
+        logging.critical(f"No scanned files. Something wrong. Please check AV logs.")
+        sys.exit(1)
     print(f"Scanned {scanned_files} files")
     if infect_field == "Infected" and int(infect_num) == 0:
         print(f"OK: no infected files")
