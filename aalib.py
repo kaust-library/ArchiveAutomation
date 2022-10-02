@@ -193,9 +193,6 @@ def av_check(av_config):
         clamav_quarentine_file = None
         return av_run_code, clamav_quarentine_file
 
-    #clamav_quarentine_file = os.path.join(av_config['quarantine_dir'], 
-    #    av_config['av_accession'])
-
     clamav_quarentine_file = pathlib.Path(pathlib.Path.cwd())\
         .joinpath(av_config['quarantine_dir'])\
         .joinpath(av_config['av_accession'])
