@@ -35,6 +35,22 @@ def aaflow(input):
     config._interpolation = configparser.ExtendedInterpolation()
     config.read(input.name)
 
+    #
+    # Define variables for convinience only.
+    #
+    acc_number = config['ACCESSION']['accession_id']
+    bag_path = config['BAGGER']['dest_dir']
+    source_list = [ii.strip() for ii in config['BAGGER']['source_dir'].split(',')]
+
+    #
+    # Test access to input dir.
+    #
+
+    for ss in source_list:
+        if not aalib.is_path_OK(ss):
+            logging.critical(f"Can't access path '{ss}. Exiting...")
+            sys.exit(1)
+
     if config['CLAMAV'].getboolean('run_it'):
         # Adding variables to the antivirus section so we have everything 
         # we need in a single place before calling the function.
@@ -44,13 +60,6 @@ def aaflow(input):
         # define in one of the configuration files (which one? Which section?).
         config['CLAMAV'].update({'quarantine_dir': 'quarantine'})
         av_check_code, av_quarentine_file = aalib.av_check(config['CLAMAV'])
-
-    #
-    # Define variables for convinience only.
-    #
-    acc_number = config['ACCESSION']['accession_id']
-    bag_path = config['BAGGER']['dest_dir']
-    source_list = [ii.strip() for ii in config['BAGGER']['source_dir'].split(',')]
 
     # Copy source folder(s) to destination (BagIt) folder.
     aalib.copy_src_dirs(source_list, bag_path)

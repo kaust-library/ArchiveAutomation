@@ -16,6 +16,14 @@ from dotenv import load_dotenv
 from dcxml import simpledc
 
 
+def is_path_OK(pp: str) -> bool:
+    "Check if path exists, or not"
+
+    if pathlib.Path(pp).exists():
+        return True
+    else:
+        return False
+    
 
 def jhove_run(jhove_config, jhove_modules, bag_path, acc_number):
     """Run Jhove"""
