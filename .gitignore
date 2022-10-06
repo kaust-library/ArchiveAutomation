@@ -15,3 +15,5 @@ etc/archiveautomation.cfg
 derby.log
 
 Old_Accessions
+
+.vscode
