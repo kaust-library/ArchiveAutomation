@@ -56,6 +56,17 @@ def aaflow(input):
         # we need in a single place before calling the function.
         config['CLAMAV'].update({'av_location': config['BAGGER']['source_dir']})
         config['CLAMAV'].update({'av_accession': config['ACCESSION']['accession_id']})
+        # 
+        # Check path of log files
+        #
+        if not aalib.is_path_OK(config['CLAMAV']['av_dir']):
+            logging.critical(f"Can't access path '{config['CLAMAV']['av_dir']}. Exiting...")
+            sys.exit(1)
+        if not aalib.is_path_OK(config['CLAMAV']['av_logs_root']):
+            logging.critical(f"Can't access path '{config['CLAMAV']['av_logs_root']}. Exiting...")
+            sys.exit(1)
+
+
         # HACK: adding quarantine dir to CLAMAV config. The quarantine dir should be
         # define in one of the configuration files (which one? Which section?).
         config['CLAMAV'].update({'quarantine_dir': 'quarantine'})
