@@ -14,23 +14,23 @@ from dotenv import load_dotenv
 
 
 @click.command()
-@click.argument('input', type=click.File('r'))
+@click.argument("input", type=click.File("r"))
 def aaflow(input):
-    """Automate digital preservation workflow. 
-    
+    """Automate digital preservation workflow.
+
     From INPUT creates a BagIt directory, and DC core complaint file.
-    
+
     \b
-    The INPUT contains the 
-    * accession number, 
-    * collection, 
+    The INPUT contains the
+    * accession number,
+    * collection,
     * ClamAV configuration,
     * Droid configuration,
     * Jhove configuration
-     """
+    """
 
-    logging.basicConfig(encoding='utf-8', level=logging.INFO)
-    
+    logging.basicConfig(encoding="utf-8", level=logging.INFO)
+
     config = configparser.ConfigParser()
     config._interpolation = configparser.ExtendedInterpolation()
     config.read(input.name)
@@ -38,9 +38,9 @@ def aaflow(input):
     #
     # Define variables for convinience only.
     #
-    acc_number = config['ACCESSION']['accession_id']
-    bag_path = config['BAGGER']['dest_dir']
-    source_list = [ii.strip() for ii in config['BAGGER']['source_dir'].split(',')]
+    acc_number = config["ACCESSION"]["accession_id"]
+    bag_path = config["BAGGER"]["dest_dir"]
+    source_list = [ii.strip() for ii in config["BAGGER"]["source_dir"].split(",")]
 
     #
     # Test access to input dir.
@@ -51,26 +51,29 @@ def aaflow(input):
             logging.critical(f"Can't access path '{ss}. Exiting...")
             sys.exit(1)
 
-    if config['CLAMAV'].getboolean('run_it'):
-        # Adding variables to the antivirus section so we have everything 
+    if config["CLAMAV"].getboolean("run_it"):
+        # Adding variables to the antivirus section so we have everything
         # we need in a single place before calling the function.
-        config['CLAMAV'].update({'av_location': config['BAGGER']['source_dir']})
-        config['CLAMAV'].update({'av_accession': config['ACCESSION']['accession_id']})
-        # 
+        config["CLAMAV"].update({"av_location": config["BAGGER"]["source_dir"]})
+        config["CLAMAV"].update({"av_accession": config["ACCESSION"]["accession_id"]})
+        #
         # Check path of log files
         #
-        if not aalib.is_path_OK(config['CLAMAV']['av_dir']):
-            logging.critical(f"Can't access path '{config['CLAMAV']['av_dir']}. Exiting...")
+        if not aalib.is_path_OK(config["CLAMAV"]["av_dir"]):
+            logging.critical(
+                f"Can't access path '{config['CLAMAV']['av_dir']}. Exiting..."
+            )
             sys.exit(1)
-        if not aalib.is_path_OK(config['CLAMAV']['av_logs_root']):
-            logging.critical(f"Can't access path '{config['CLAMAV']['av_logs_root']}. Exiting...")
+        if not aalib.is_path_OK(config["CLAMAV"]["av_logs_root"]):
+            logging.critical(
+                f"Can't access path '{config['CLAMAV']['av_logs_root']}. Exiting..."
+            )
             sys.exit(1)
-
 
         # HACK: adding quarantine dir to CLAMAV config. The quarantine dir should be
         # define in one of the configuration files (which one? Which section?).
-        config['CLAMAV'].update({'quarantine_dir': 'quarantine'})
-        av_check_code, av_quarentine_file = aalib.av_check(config['CLAMAV'])
+        config["CLAMAV"].update({"quarantine_dir": "quarantine"})
+        av_check_code, av_quarentine_file = aalib.av_check(config["CLAMAV"])
 
     # Copy source folder(s) to destination (BagIt) folder.
     aalib.copy_src_dirs(source_list, bag_path)
@@ -80,7 +83,7 @@ def aaflow(input):
     #
     # Define a dictionary with details of the API.
     # TODO: Config file can be defined as command line argument.
-    api_config = os.path.join('etc', 'archiveautomation.cfg')
+    api_config = os.path.join("etc", "archiveautomation.cfg")
     my_api_conf = aalib.get_api_conf(api_config)
 
     if not my_api_conf:
@@ -96,7 +99,7 @@ def aaflow(input):
         print("Empty password for API. Script can't continue. Exiting...")
         sys.exit(1)
     else:
-        my_api_conf['password'] = api_pass
+        my_api_conf["password"] = api_pass
 
     # Get access token
     my_token = aalib.get_token(my_api_conf, my_headers)
@@ -104,7 +107,7 @@ def aaflow(input):
         print("No access token. Exiting...")
         sys.exit(1)
     else:
-        my_headers['authorization'] = 'Bearer ' + my_token
+        my_headers["authorization"] = "Bearer " + my_token
 
     # print(f"my token is {my_token}")
 
@@ -112,10 +115,10 @@ def aaflow(input):
     Archivera_BagIt = aalib.get_archivera_bagit()
 
     # Read accession by accession number (ACCXAN)
-    #acc_number = '013_001_0003'
+    # acc_number = '013_001_0003'
     dt_acc = {}
-    dt_acc['command'] = f"ACCXAN=='{acc_number}'"
-    dt_acc['fields'] = ",".join([kk for kk in Archivera_BagIt.keys()])
+    dt_acc["command"] = f"ACCXAN=='{acc_number}'"
+    dt_acc["fields"] = ",".join([kk for kk in Archivera_BagIt.keys()])
 
     my_accession = aalib.get_accession(my_api_conf, my_headers, dt_acc)
 
@@ -131,26 +134,25 @@ def aaflow(input):
 
     dc_file = f"{bag_path}/bag-info.xml"
 
-    with open(dc_file, 'w') as ff_dc:
+    with open(dc_file, "w") as ff_dc:
         ff_dc.write(dc_text)
 
-
     # Run Droid on the "bag" folder
-    _ = aalib.droid_run(config['DROID'], bag_path, acc_number)
-
+    _ = aalib.droid_run(config["DROID"], bag_path, acc_number)
 
     # Run Jhove on the "bag" folder
-    _ = aalib.jhove_run(config['JHOVE'], config['JHOVE MODULES'], bag_path, acc_number)
+    _ = aalib.jhove_run(config["JHOVE"], config["JHOVE MODULES"], bag_path, acc_number)
 
     # If the return code from the antivirus is '0', then the second scan
     # finished sucessfully and we can erase the quarantine file, but ignore
     # the file if we are not running the anti-virus part.
-    if config['CLAMAV'].getboolean('run_it'):
+    if config["CLAMAV"].getboolean("run_it"):
         logging.info(f"Removing quarantine file '{av_quarentine_file}'")
         os.remove(av_quarentine_file)
 
     # The End
-    print('Have a nice day.')
+    print("Have a nice day.")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     aaflow()
