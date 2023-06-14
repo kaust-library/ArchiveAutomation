@@ -298,7 +298,7 @@ def av_run(av_config):
         stderr=subprocess.STDOUT
     )
     result.check_returncode
-    av_log = result.stdout()
+    av_log = result.stdout
     print("done.")
 
     try:
