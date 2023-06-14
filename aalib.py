@@ -295,7 +295,7 @@ def av_run(av_config):
     result = subprocess.run(
         av_check,
         stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
+        stderr=subprocess.STDOUT
     )
     result.check_returncode
     av_log = result.stdout()
