@@ -37,7 +37,7 @@ def aaflow(input):
     logger.setLevel(logging.DEBUG)
     #
     # Logs to file
-    file_handler = logging.FileHandler("archiveautomation.log")
+    file_handler = logging.FileHandler("archive_automation.log")
     file_handler.setLevel(logging.INFO)
     file_handler.setFormatter(formatter)
     #
