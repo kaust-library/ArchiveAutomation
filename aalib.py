@@ -307,20 +307,19 @@ def av_run(av_config):
     print(f"Writing ClamAV output file {av_log_file}", end="... ")
     try:
         with open(av_log_file, "wb") as ff:
-            ff.writelines(av_log)
+            ff.write(av_log)
         print("\ndone.")
 
-        print(f"Checking for infected files")
-        is_infected = check_infected(av_log)
-        if is_infected:
-            logging.critical("Caution!!!Possible infection!!!!")
-            logging.critical("Aborting execution.")
-            sys.exit(1)
     except Exception as ee:
-        logging.error(f"Error {ee} writing ClamAV logs.")
+        logging.error(f"Error '{ee}' writing ClamAV logs.")
         sys.exit(1)
-    else:
-        return 0
+
+    print(f"Checking for infected files")
+    is_infected = check_infected(av_log)
+    if is_infected:
+        logging.critical("Caution!!!Possible infection!!!!")
+        logging.critical("Aborting execution.")
+        sys.exit(1)
 
 
 def copy_src_dirs(source_dir, dest_dir):
