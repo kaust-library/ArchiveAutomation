@@ -286,7 +286,7 @@ def av_run(av_config):
         cur_dir = os.getcwd()
         os.chdir(av_config["av_dir"])
     except OSError as ee:
-        logging.critical(f"Error {ee} changing to {av_config['av_dir']} ")
+        logging.critical(f"Error {ee} changing to {av_config['av_dir']}")
         sys.exit(1)
     clamav_bin_file = f".\{av_config['av_clamav']}"
     av_check = f"{clamav_bin_file} --recursive \"{av_config['av_location']}\" --log \"{av_log_file}\""
