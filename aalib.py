@@ -14,27 +14,6 @@ import datetime as DT
 from dotenv import load_dotenv
 from dcxml import simpledc
 
-# Logging format
-formatter = logging.Formatter("%(asctime)s:%(module)s:%(levelname)s:%(message)s")
-#
-# Basic logger
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-#
-# Logs to file
-file_handler = logging.FileHandler("archive_automation.log")
-file_handler.setLevel(logging.WARNING)
-file_handler.setFormatter(formatter)
-#
-# Logs to console
-stream_handler = logging.StreamHandler()
-stream_handler.setLevel(logging.INFO)
-stream_handler.setFormatter(formatter)
-#
-logger.addHandler(file_handler)
-logger.addHandler(stream_handler)
-
-
 
 def is_path_OK(pp: str) -> bool:
     "Check if path exists, or not"
@@ -157,7 +136,7 @@ def check_infected(av_output):
     scanned_files = total_line.split()[-1]
     infect_field, infect_num = infect_line.split()[0], infect_line.split()[2]
     if int(scanned_files) == 0:
-        logger.critical(f"No scanned files. Something wrong. Please check AV logs.")
+        logging.critical(f"No scanned files. Something wrong. Please check AV logs.")
         sys.exit(1)
     print(f"Scanned {scanned_files} files")
     if infect_field == "Infected" and int(infect_num) == 0:
@@ -195,7 +174,7 @@ def check_quarantine(av_quarentine_file):
             in_quarantine = False
 
     except Exception as ee:
-        logger.error(
+        logging.error(
             f"\nError {ee} while reading quarantine file {av_quarentine_file}."
         )
         sys.exit(1)
@@ -225,12 +204,12 @@ def av_check(av_config):
     try:
         qq_dir = pathlib.Path(av_config["quarantine_dir"])
         if not qq_dir.exists():
-            logger.info(f"Creating quarantine directory '{qq_dir}'")
+            logging.info(f"Creating quarantine directory '{qq_dir}'")
             qq_dir.mkdir()
     except FileNotFoundError as ee:
-        logger.error(f"A parent directory for {qq_dir} is missing in the path")
+        logging.error(f"A parent directory for {qq_dir} is missing in the path")
     except Exception as ee:
-        logger.error(f"Error {ee} while creating quarantine directory {qq_dir}")
+        logging.error(f"Error {ee} while creating quarantine directory {qq_dir}")
         av_run_code = 99
         clamav_quarentine_file = None
         return av_run_code, clamav_quarentine_file
@@ -242,7 +221,7 @@ def av_check(av_config):
     )
 
     if not clamav_quarentine_file.is_file():
-        logger.info(
+        logging.info(
             f"Quarentine file {clamav_quarentine_file} not found. Running first scan"
         )
         av_run_code = av_run(av_config)
@@ -250,24 +229,24 @@ def av_check(av_config):
         clamav_status_line = f"{av_config['quarantine_days']}:{av_run_date}"
         with open(clamav_quarentine_file, "w", encoding="utf-8") as ff_av:
             ff_av.write(clamav_status_line)
-        logger.info(
+        logging.info(
             f"Starting quarantine of {av_config['quarantine_days']} days for accession {av_config['av_accession']}"
         )
         sys.exit(0)
     else:
         in_quarantine = check_quarantine(clamav_quarentine_file)
         if in_quarantine:
-            logger.info(
+            logging.info(
                 f"Accession {av_config['av_accession']} still in quarantine. Stopping."
             )
             sys.exit(0)
         else:
-            logger.info(f"Quarantine of accession {av_config['av_accession']} is over")
+            logging.info(f"Quarantine of accession {av_config['av_accession']} is over")
             av_run_code = av_run(av_config)
             # if av_run_code == 0:
             # # Assuming that the quarantine finished, and we completed the
             # # second scan of files, then we can remove the quarantine file.
-            # logger.info(f'Removing {clamav_quarentine_file} after 2nd scan')
+            # logging.info(f'Removing {clamav_quarentine_file} after 2nd scan')
             # os.remove(clamav_quarentine_file)
 
             #
@@ -307,7 +286,7 @@ def av_run(av_config):
         cur_dir = os.getcwd()
         os.chdir(av_config["av_dir"])
     except OSError as ee:
-        logger.critical(f"Error {ee} changing to {av_config['av_dir']}")
+        logging.critical(f"Error {ee} changing to {av_config['av_dir']}")
         sys.exit(1)
     clamav_bin_file = f".\{av_config['av_clamav']}"
     av_check = f"{clamav_bin_file} --recursive \"{av_config['av_location']}\" --log \"{av_log_file}\""
@@ -319,29 +298,29 @@ def av_run(av_config):
 
     try:
         os.chdir(cur_dir)
-        logger.info(f"Returned to previous directory {cur_dir}")
+        logging.info(f"Returned to previous directory {cur_dir}")
     except OSError as ee:
-        logger.critical(f"Failed to return to {cur_dir} with error {ee}")
+        logging.critical(f"Failed to return to {cur_dir} with error {ee}")
         sys.exit(1)
 
     # Preparing to check the amount of infected files
-    logger.info(f"Writing ClamAV output file {av_log_file}")
+    logging.info(f"Writing ClamAV output file {av_log_file}")
     try:
         with open(av_log_file, "wb") as ff:
             ff.write(av_log)
 
     except Exception as ee:
-        logger.error(f"Error '{ee}' writing ClamAV logs.")
+        logging.error(f"Error '{ee}' writing ClamAV logs.")
         sys.exit(1)
 
-    logger.info(f"Checking for infected files")
-    is_infected = check_infected(av_log.decode('utf-8', errors='ignore'))
+    logging.info(f"Checking for infected files")
+    is_infected = check_infected(av_log.decode("utf-8", errors="ignore"))
     if is_infected:
-        logger.critical("Caution!!!Possible infection!!!!")
-        logger.critical("Aborting execution.")
+        logging.critical("Caution!!!Possible infection!!!!")
+        logging.critical("Aborting execution.")
         sys.exit(1)
     else:
-        logger.info("End of 'av_run")
+        logging.info("End of 'av_run")
         return
 
 
@@ -513,7 +492,7 @@ def get_accession(my_api_conf, my_headers, dt_acc):
 
     my_accession = requests.get(acc_url, headers=my_headers, params=dt_acc)
 
-    logger.debug(f"\nAccession {str(my_accession)} after API.")
+    logging.debug(f"\nAccession {str(my_accession)} after API.")
 
     return my_accession.json()
 

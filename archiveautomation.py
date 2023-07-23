@@ -29,25 +29,7 @@ def aaflow(input):
     * Jhove configuration
     """
 
-    # Logging format
-    formatter = logging.Formatter("%(asctime)s:%(module)s:%(levelname)s:%(message)s")
-    #
-    # Basic logger
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
-    #
-    # Logs to file
-    file_handler = logging.FileHandler("archive_automation.log")
-    file_handler.setLevel(logging.WARNING)
-    file_handler.setFormatter(formatter)
-    #
-    # Logs to console
-    stream_handler = logging.StreamHandler()
-    stream_handler.setLevel(logging.INFO)
-    stream_handler.setFormatter(formatter)
-    #
-    logger.addHandler(file_handler)
-    logger.addHandler(stream_handler)
+    logging.basicConfig(filename="archive_automation.log", level=logging.WARNING)
 
     config = configparser.ConfigParser()
     config._interpolation = configparser.ExtendedInterpolation()
@@ -66,7 +48,7 @@ def aaflow(input):
 
     for ss in source_list:
         if not aalib.is_path_OK(ss):
-            logger.critical(f"Can't access path '{ss}. Exiting...")
+            logging.critical(f"Can't access path '{ss}. Exiting...")
             sys.exit(1)
 
     if config["CLAMAV"].getboolean("run_it"):
@@ -78,12 +60,12 @@ def aaflow(input):
         # Check path of log files
         #
         if not aalib.is_path_OK(config["CLAMAV"]["av_dir"]):
-            logger.critical(
+            logging.critical(
                 f"Can't access path '{config['CLAMAV']['av_dir']}. Exiting..."
             )
             sys.exit(1)
         if not aalib.is_path_OK(config["CLAMAV"]["av_logs_root"]):
-            logger.critical(
+            logging.critical(
                 f"Can't access path '{config['CLAMAV']['av_logs_root']}. Exiting..."
             )
             sys.exit(1)
@@ -105,7 +87,7 @@ def aaflow(input):
     my_api_conf = aalib.get_api_conf(api_config)
 
     if not my_api_conf:
-        logger.warning("Not API configuration. Check congfig file. Exiting...")
+        logging.warning("Not API configuration. Check congfig file. Exiting...")
         sys.exit(1)
 
     # Define the headers for the API requests
@@ -114,7 +96,7 @@ def aaflow(input):
     # Read the password from the environment variables. Raise an error if doesn't find it.
     api_pass = aalib.get_api_passwd()
     if not api_pass:
-        logger.critical("Empty password for API. Script can't continue. Exiting...")
+        logging.critical("Empty password for API. Script can't continue. Exiting...")
         sys.exit(1)
     else:
         my_api_conf["password"] = api_pass
@@ -122,7 +104,7 @@ def aaflow(input):
     # Get access token
     my_token = aalib.get_token(my_api_conf, my_headers)
     if not my_token:
-        logger.critical("No access token. Exiting...")
+        logging.critical("No access token. Exiting...")
         sys.exit(1)
     else:
         my_headers["authorization"] = "Bearer " + my_token
