@@ -230,7 +230,7 @@ def av_check(av_config):
         with open(clamav_quarentine_file, "w", encoding="utf-8") as ff_av:
             ff_av.write(clamav_status_line)
         logging.info(
-            f"Starting quarantine of {av_config['quarantine_days']} days for accession {av_config['av_accession']}"
+            f"Starting quarantine of '{av_config['quarantine_days']}' days for accession '{av_config['av_accession']}'",
         )
         sys.exit(0)
     else:

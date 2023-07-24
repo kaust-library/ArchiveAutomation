@@ -29,8 +29,6 @@ def aaflow(input):
     * Jhove configuration
     """
 
-    logging.basicConfig(filename="archive_automation.log", level=logging.WARNING)
-
     config = configparser.ConfigParser()
     config._interpolation = configparser.ExtendedInterpolation()
     config.read(input.name)
@@ -155,4 +153,10 @@ def aaflow(input):
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        format="%(asctime)s: %(message)s",
+        datefmt="%m/%d/%Y %I:%M:%S %p",
+        level=logging.INFO,
+    )
+
     aaflow()
