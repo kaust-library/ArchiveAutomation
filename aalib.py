@@ -265,9 +265,9 @@ def av_run(av_config):
     # the name of the output file of the run.
     av_run_date = DT.datetime.today().strftime("%Y%m%d")
 
-    # Update the antivirus database
-    # pathlib.Path(av_check)
-    av_update = pathlib.Path(av_config["av_dir"]).joinpath(av_config["av_update"])
+    # Don't forget to create the Docker volume:
+    # docker volume create clam_db
+    av_update = "docker run -it --rm --name fresh_clam_db --mount source=clam_db,target=/var/lib/clamav clamav/clamav:latest freshclam"
     print(f"Antivirus update: {av_update}", end="... ")
     #
     # Testing the command line for AV. Remove after testing.
@@ -277,41 +277,20 @@ def av_run(av_config):
         )
     print("done.")
 
-    # Antivirus command line
+    av_log_file = f"clamAVlog{av_config['av_accession']}_{av_run_date}.txt"
 
-    av_log_file = pathlib.Path(av_config["av_logs_root"]).joinpath(
-        f"clamAVlog{av_config['av_accession']}_{av_run_date}.txt"
-    )
-    try:
-        cur_dir = os.getcwd()
-        os.chdir(av_config["av_dir"])
-    except OSError as ee:
-        logging.critical(f"Error {ee} changing to {av_config['av_dir']}")
-        sys.exit(1)
-    clamav_bin_file = f".\{av_config['av_clamav']}"
-    av_check = f"{clamav_bin_file} --recursive \"{av_config['av_location']}\" --log \"{av_log_file}\""
-    print(f"Antivirus check: {av_check}", end="... ")
+    docker_run = f"docker run -it --rm --name aa_docker"
+    docker_target = f"-v \"{av_config['av_location']}:/scandir\""
+    docker_log_target = f"-v \"{av_config['av_logs_root']}:/logs\""
+    clam_db = "--mount source=clam_db,target=/var/lib/clamav"
+    clam_run = "clamav/clamav:latest clamscan /scandir"
+    clam_options = " --recursive=yes --verbose"
+    log_av = f"--log=/logs/{av_log_file}"
+    av_check = f"{docker_run} {docker_target} {docker_log_target} {clam_db} {clam_run} {log_av} {clam_options}"
+    logging.info(f"Antivirus check: {av_check}")
     result = subprocess.run(av_check, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     result.check_returncode
     av_log = result.stdout
-    print("done.")
-
-    try:
-        os.chdir(cur_dir)
-        logging.info(f"Returned to previous directory {cur_dir}")
-    except OSError as ee:
-        logging.critical(f"Failed to return to {cur_dir} with error {ee}")
-        sys.exit(1)
-
-    # Preparing to check the amount of infected files
-    logging.info(f"Writing ClamAV output file {av_log_file}")
-    try:
-        with open(av_log_file, "wb") as ff:
-            ff.write(av_log)
-
-    except Exception as ee:
-        logging.error(f"Error '{ee}' writing ClamAV logs.")
-        sys.exit(1)
 
     logging.info(f"Checking for infected files")
     is_infected = check_infected(av_log.decode("utf-8", errors="ignore"))
