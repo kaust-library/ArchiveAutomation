@@ -267,18 +267,15 @@ def av_run(av_config):
 
     # Don't forget to create the Docker volume:
     # docker volume create clam_db
+    logging.info("Updating ClamAV database")
     av_update = "docker run -it --rm --name fresh_clam_db --mount source=clam_db,target=/var/lib/clamav clamav/clamav:latest freshclam"
-    print(f"Antivirus update: {av_update}", end="... ")
+    result = subprocess.run(
+        av_update, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+    )
+
     #
-    # Testing the command line for AV. Remove after testing.
-    if av_config.getboolean("run_it"):
-        result = subprocess.run(
-            av_update, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
-        )
-    print("done.")
-
+    # Preparing the Docker ClamAV command line
     av_log_file = f"clamAVlog{av_config['av_accession']}_{av_run_date}.txt"
-
     docker_run = f"docker run -it --rm --name aa_docker"
     docker_target = f"-v \"{av_config['av_location']}:/scandir\""
     docker_log_target = f"-v \"{av_config['av_logs_root']}:/logs\""
