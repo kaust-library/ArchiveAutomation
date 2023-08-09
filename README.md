@@ -20,6 +20,13 @@ Next we describe the usage of the script, and the installation of dependencies a
 
 The usage assumes that the repository is already cloned, and we are ready to run the script.
 
+> Note. We had problems with long pathnames, and we found out that [there is a limitation on the lentght of the path in Windows API](https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry). We changed the registry, rebooted the server, and now everything is working.
+>```powershell
+> New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" `
+> -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+>```
+>
+
 ### Update Local Repository
 
 Update the repository to latest version
