@@ -1,4 +1,7 @@
-venv
+venv 
+
+venv310
+
 *.log
 
 quarantine
