@@ -1,10 +1,12 @@
 #
-# Define the parameters for ArchivEra API
+# Optional settings for ArchiveAutomation. Copy to etc\archiveautomation.cfg
+# only if you need to change them; without this file the defaults are used.
 #
 
-[API]
-url = 'https://path.to.archive/public'
-client_id = 'api_client'
-grant_type = 'my grant type'
-username = 'my API user'
-database = 'my database'
+[PATHS]
+# The accession register (one row per accession). Default:
+#   register\accession_register.csv in the ArchiveAutomation folder.
+# register = C:\Tools\ArchiveAutomation\register\accession_register.csv
+
+# The shared vocabulary folder. Default: vocabulary\ in the ArchiveAutomation folder.
+# vocabulary = C:\Tools\ArchiveAutomation\vocabulary

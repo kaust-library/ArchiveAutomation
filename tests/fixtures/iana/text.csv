@@ -1,0 +1,3 @@
+Name,Template,Reference
+plain,,[RFC2046][RFC3676][RFC5147]
+csv,text/csv,[RFC4180][RFC7111]

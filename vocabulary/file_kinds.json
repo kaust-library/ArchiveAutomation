@@ -1,0 +1,13 @@
+{
+  "_about": "How files are grouped in DC.FORMAT_EXTENT. A media type matches a kind if it equals an entry, or starts with an entry ending in '/' or '.'. Kinds are checked in this order; anything unmatched counts as 'other'.",
+  "kinds": [
+    {"name": "document", "media_types": [
+      "application/pdf", "application/msword", "application/rtf", "text/",
+      "application/vnd.openxmlformats-officedocument.",
+      "application/vnd.ms-excel", "application/vnd.ms-powerpoint",
+      "application/vnd.oasis.opendocument.", "application/epub+zip"]},
+    {"name": "image", "media_types": ["image/"]},
+    {"name": "video", "media_types": ["video/"]},
+    {"name": "audio", "media_types": ["audio/"]}
+  ]
+}

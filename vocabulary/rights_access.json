@@ -1,0 +1,9 @@
+{
+  "_about": "DC.RIGHTS_ACCESS levels. The register holds the level (case ignored); the sentence is what gets written. {DC.SOURCE} is replaced with the accession's DC.SOURCE.",
+  "levels": {
+    "Public": "Public.",
+    "Internal": "KAUST internal access only.",
+    "Restricted": "Restricted. Approval from {DC.SOURCE} is required to access item.",
+    "Highly Restricted": "Highly Restricted. Approval from KAUST Office of the President is required to access item."
+  }
+}

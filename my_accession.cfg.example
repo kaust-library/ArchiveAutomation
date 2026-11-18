@@ -1,42 +1,58 @@
+#
+# Accession configuration for the digital preservation workflow.
+# Copy this file (e.g. to configs\013_001_0015.cfg), edit it, and run:
+#     archiveautomation configs\013_001_0015.cfg
+#
+
 [ACCESSION]
 accession_id = 000_000_0000
 
+# The accession's metadata (title, creator, DC.TYPE, ...) is NOT in this file:
+# it comes from the row for this accession_id in register\accession_register.csv.
+# See METADATA.md.
+
 [BAGGER]
-# You can specify a comma separated list of directories as source: dir1, dir2, ...
-source_dir = C:\Users\joe\Work\boat_trip_pictures, C:\Users\joe\Work\my_event_1
-# Using Python ExtendedInterpolation to use the 'accession_id' as target directory
-dest_dir = C:\Users\joe\Work\${ACCESSION:accession_id}
-# If 'false' the script will stop the the destination directory already exists.
+# The folder to ingest. With the antivirus on, use one folder only.
+# (Without it, a comma separated list is accepted: dir1, dir2, ...)
+source_dir = C:\Archive\incoming\my_event
+# Where the bag is built. It must not exist yet, and its path must have no spaces
+# (DROID and JHOVE are run on it). The \ before ${...} is needed.
+dest_dir = C:\Archive\bags\${ACCESSION:accession_id}
 
 [CLAMAV]
-av_dir = C:\Program Files\ClamAV
-av_update = freshclam.exe
-av_clamav = clamscan.exe
-av_logs_root = C:\Users\Desktop\john\clamscanlogs\clamAVlog
+# ClamAV runs in Docker (image clamav/clamav, volume clam_db): Docker Desktop
+# must be running. The first run scans and starts the quarantine; run the same
+# command again after more than 'quarantine_days' days to finish the workflow.
+av_logs_root = C:\Archive\logs\clamav
 quarantine_days = 30
-# Doesn't actually run the AV command, just print it.
-run_it = no
+# 'no' skips the antivirus (for tests only).
+run_it = yes
 
 [DROID]
-droid_dir = C:\Users\joe\Downloads\droid-binary-6.5.2-bin-win32-with-jre
+# No spaces in the path (so not under C:\Program Files).
+droid_dir = C:\Tools\droid
 droid_bin = droid.bat
-# The profile is the database with the metadata in binary format. 
+# The profile is the database with the metadata in binary format.
 keep_profile = yes
 
 [JHOVE]
-jhove_dir = C:\Users\joe\Work\jhove
+# No spaces in the path.
+jhove_dir = C:\Tools\jhove
 jhove_bin = jhove.bat
 jhove_xml = yes
 
 [JHOVE MODULES]
+# 'yes' for each format present in the accession.
 AIFF-hul     = no
 ASCII-hul    = no
+EPUB-ptc     = no
 GIF-hul      = no
 GZip-kb      = no
 HTML-hul     = no
 JPEG-hul     = yes
 JPEG2000-hul = no
-PDF-hul      = no
+PDF-hul      = yes
+PNG-gdm      = no
 TIFF-hul     = no
 UTF8-hul     = no
 WARC-kb      = no
