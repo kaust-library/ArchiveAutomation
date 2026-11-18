@@ -21,3 +21,8 @@ derby.log
 Old_Accessions
 
 .vscode
+# The accession register holds unpublished metadata: never commit it.
+register/
+
+# Output of libnova_probe.py (contains Libnova metadata)
+libnova_probe_output.txt

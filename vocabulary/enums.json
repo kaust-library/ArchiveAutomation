@@ -1,0 +1,26 @@
+{
+  "_about": "Allowed values for controlled Libnova fields. Matching ignores case; the value written is the spelling given here. Keep in step with Libnova: GET /objects/metadata/schema/descriptor/{descriptor_id}.",
+  "DC.TYPE": {
+    "descriptor_id": 96,
+    "values": ["Collection", "Dataset", "Event", "Image", "Interactive Resource", "Moving Image",
+               "Physical Object", "Service", "Software", "Sound", "Still Image", "Text"]
+  },
+  "DC.LANGUAGE": {
+    "descriptor_id": 102,
+    "values": ["en", "ar-SA"]
+  },
+  "appraised": {
+    "descriptor_id": 178,
+    "values": ["Yes", "No"]
+  },
+  "accession": {
+    "descriptor_id": 177,
+    "values": ["Correspondence", "Academic career records", "Research process records",
+               "Research administration records", "Unpublished research papers",
+               "Academic lecture records", "Academic consultation records",
+               "Research communication records", "KAUST Committee record", "KAUST event",
+               "Interviews", "KAUST art", "Architectural plans", "KAUST publications",
+               "Does not meet accession criteria", "Executive administration records",
+               "KAUST gift"]
+  }
+}

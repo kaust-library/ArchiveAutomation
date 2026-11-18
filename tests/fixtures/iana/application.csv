@@ -1,0 +1,7 @@
+Name,Template,Reference
+pdf,application/pdf,[RFC8118]
+msword,application/msword,[Paul_Lindner]
+vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.wordprocessingml.document,[Makoto_Murata]
+vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,[Makoto_Murata]
+octet-stream,application/octet-stream,[RFC2045][RFC2046]
+zip,application/zip,[Paul_Lindner]
