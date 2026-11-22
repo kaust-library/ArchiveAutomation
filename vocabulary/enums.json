@@ -2,25 +2,64 @@
   "_about": "Allowed values for controlled Libnova fields. Matching ignores case; the value written is the spelling given here. Keep in step with Libnova: GET /objects/metadata/schema/descriptor/{descriptor_id}.",
   "DC.TYPE": {
     "descriptor_id": 96,
-    "values": ["Collection", "Dataset", "Event", "Image", "Interactive Resource", "Moving Image",
-               "Physical Object", "Service", "Software", "Sound", "Still Image", "Text"]
+    "values": [
+      "Collection",
+      "Dataset",
+      "Event",
+      "Image",
+      "Interactive Resource",
+      "Moving Image",
+      "Physical Object",
+      "Service",
+      "Software",
+      "Sound",
+      "Still Image",
+      "Text"
+    ]
   },
   "DC.LANGUAGE": {
     "descriptor_id": 102,
-    "values": ["en", "ar-SA"]
+    "values": [
+      "en",
+      "ar-SA",
+      "fr",
+      "zh-CN",
+      "es",
+      "pt",
+      "id",
+      "ur",
+      "de"
+    ]
   },
   "appraised": {
     "descriptor_id": 178,
-    "values": ["Yes", "No"]
+    "values": [
+      "Yes",
+      "No"
+    ]
   },
   "accession": {
     "descriptor_id": 177,
-    "values": ["Correspondence", "Academic career records", "Research process records",
-               "Research administration records", "Unpublished research papers",
-               "Academic lecture records", "Academic consultation records",
-               "Research communication records", "KAUST Committee record", "KAUST event",
-               "Interviews", "KAUST art", "Architectural plans", "KAUST publications",
-               "Does not meet accession criteria", "Executive administration records",
-               "KAUST gift"]
-  }
+    "values": [
+      "Correspondence",
+      "Academic career records",
+      "Research process records",
+      "Research administration records",
+      "Unpublished research papers",
+      "Academic lecture records",
+      "Academic consultation records",
+      "Research communication records",
+      "KAUST Committee record",
+      "KAUST event",
+      "Interviews",
+      "KAUST art",
+      "Architectural plans",
+      "KAUST publications",
+      "Does not meet accession criteria",
+      "Executive administration records",
+      "KAUST gift",
+      "KAUST Community record"
+    ]
+  },
+  "_retrieved": "Allowed values from https://ls-kaust.libnova.com/api, 2026-11-22 08:44"
 }

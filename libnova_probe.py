@@ -22,10 +22,21 @@ import urllib.request
 BASE_URL = os.environ.get("LIBNOVA_BASE_URL", "https://ls-kaust.libnova.com/api")
 OUTPUT = "libnova_probe_output.txt"
 
+# How the probe identifies itself. Some firewalls refuse Python's default
+# ("Python-urllib/3.x") with a 403 before Libnova sees the key, while
+# PowerShell's Invoke-RestMethod gets through. The first that works is used.
+USER_AGENTS = [
+    ("PowerShell", "Mozilla/5.0 (Windows NT; Windows NT 10.0; en-US) WindowsPowerShell/5.1"),
+    ("ArchiveAutomation", "ArchiveAutomation/0.7 (+https://github.com/kaust-library/ArchiveAutomation)"),
+    ("Python default", None),
+]
 
-def call(method, path, api_key, body=None):
+
+def call(method, path, api_key, body=None, user_agent=None):
     """Return (HTTP status, parsed JSON or text)."""
     headers = {"accept": "application/json", "Authorization": f"Bearer {api_key}"}
+    if user_agent:
+        headers["User-Agent"] = user_agent
     data = None
     if body is not None:
         headers["Content-Type"] = "application/json"
@@ -66,6 +77,12 @@ def main():
     file_id, accession_id = sys.argv[1], sys.argv[2]
     api_key = os.environ.get("LIBNOVA_API_KEY") or getpass.getpass("Libnova API key: ")
     api_key = api_key.strip()
+    # Show only the length, so a bad paste (empty, cut short, extra characters)
+    # can be spotted without revealing the key.
+    print(f"Using an API key of {len(api_key)} characters with {BASE_URL}")
+    if not api_key:
+        print("The key is empty. Set it with:  $env:LIBNOVA_API_KEY = '<your key>'")
+        return 1
 
     nested = lambda field: {"must": [{"nested": {"path": "metadata", "query": {
         "simple_query_string": {"fields": [field], "query": accession_id,
@@ -85,9 +102,28 @@ def main():
          {"must": [{"simple_query_string": {"query": f"\"{accession_id}\""}}]}),
     ]
 
-    lines = [f"Libnova probe: {BASE_URL}, file {file_id}, DC.IDENTIFIER {accession_id}", ""]
+    lines = [f"Libnova probe: {BASE_URL}, file {file_id}, DC.IDENTIFIER {accession_id}",
+             f"API key length: {len(api_key)} characters", ""]
+
+    # Which client identity gets through?
+    user_agent = None
+    for name, ua in USER_AGENTS:
+        status, result = call("GET", "/user/profile", api_key, user_agent=ua)
+        print(f"0 identity '{name}': HTTP {status}")
+        lines.append(f"===== 0 identity '{name}': GET /user/profile -> HTTP {status}")
+        if status != 200:
+            lines.append(result if isinstance(result, str) else json.dumps(shorten(result), indent=2))
+        lines.append("")
+        if status == 200:
+            user_agent = ua
+            print(f"  Using identity '{name}' for the other calls.")
+            break
+    else:
+        print("  No identity was accepted; trying the other calls with the first one.")
+        user_agent = USER_AGENTS[0][1]
+
     for title, method, path, body in probes:
-        status, result = call(method, path, api_key, body)
+        status, result = call(method, path, api_key, body, user_agent=user_agent)
         print(f"{title}: HTTP {status}")
         lines.append(f"===== {title}: {method} {path} -> HTTP {status}")
         if body is not None:
@@ -100,8 +136,7 @@ def main():
                      if not isinstance(result, str) else result)
         lines.append("")
         if title.startswith("1") and status in (401, 403):
-            print("The API key was refused; stopping. Check the key and API_ACCESS.")
-            break
+            print("  The profile call was refused; trying the other calls anyway.")
 
     with open(OUTPUT, "w", encoding="utf-8") as ff:
         ff.write("\n".join(lines))

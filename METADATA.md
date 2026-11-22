@@ -23,9 +23,9 @@ Start from `accession_register.csv.example`. Columns:
 | --- | --- | --- |
 | title, creator, DC.SOURCE | Yes | Free text |
 | DC.TYPE, DC.LANGUAGE, appraised, accession | Yes | Controlled (`vocabulary\enums.json`); case is corrected |
-| DC.RIGHTS_ACCESS | Yes | Public, Internal, Restricted or Highly Restricted; written as its full sentence |
-| DC.DATE, DC.DATE_ACCEPTED | Yes | `YYYY-MM-DD`, `YYYY-MM`, `YYYY` or `YYYY-YYYY`; DC.DATE may be `Undated`. Slash dates are refused. |
-| DC.DESCRIPTION, subject, DC.COVERAGE_TEMPORAL | Recommended | Warning if empty |
+| DC.RIGHTS_ACCESS | Yes | Public, Internal, Restricted or Highly Restricted (or the full sentence); written as its full sentence (`vocabulary\rights_access.json`) |
+| DC.DATE, DC.DATE_ACCEPTED | Yes | `YYYY-MM-DD`, `YYYY-MM`, `YYYY`, `YYYY-YYYY` or open `YYYY-` (written as YYYY-MM-DD); DC.DATE may be `Undated`. Slash dates are refused. |
+| DC.DESCRIPTION, subject, DC.COVERAGE_TEMPORAL | Recommended | Warning if empty. DC.COVERAGE_TEMPORAL: `2020`, `2020-10`, `2008-2013` or open `2022-`, kept as typed |
 | DC.DATE_COPYRIGHTED, DC.RELATION_HASVERSION, DC.ACCRUAL_* | Optional | |
 | DC.PUBLISHER, DC.COVERAGE_SPATIAL, DC.FORMAT_MEDIUM, DC.RIGHTS | Default | From `vocabulary\defaults.json` unless the register gives a value |
 | DC.IDENTIFIER, DC.FORMAT, DC.FORMAT_EXTENT | Computed | Accession ID; IANA media types and extent from DROID |
@@ -41,9 +41,15 @@ antivirus scan, so nothing is scanned, copied or quarantined.
 a snapshot of the IANA media types registry (`iana\`).
 
 ```
-archiveautomation-vocab refresh-iana   # fetch a new IANA snapshot (needs internet)
-archiveautomation-vocab show           # list what the vocabulary holds
+archiveautomation-vocab refresh-iana              # fetch a new IANA snapshot (needs internet)
+archiveautomation-vocab refresh-libnova --check   # compare enums.json with Libnova
+archiveautomation-vocab refresh-libnova           # update enums.json from Libnova
+archiveautomation-vocab show                      # list what the vocabulary holds
 ```
+
+`refresh-libnova` reads the allowed values of DC.TYPE, DC.LANGUAGE, accession and
+appraised from Libnova's metadata schema (`descriptor_id` in `enums.json`) and needs
+`$env:LIBNOVA_API_KEY`. Commit the updated `enums.json` afterwards.
 
 Run `refresh-iana` once after installing, then now and then. A file DROID can't
 identify, or whose media type isn't registered, gets `application/octet-stream`

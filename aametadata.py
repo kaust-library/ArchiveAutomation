@@ -98,7 +98,8 @@ def parse_date(value):
     """Return (YYYY-MM-DD or None for Undated, error or None).
 
     Accepted, as in the physical ingest: 2007 -> 2007-01-01, 2008-08 ->
-    2008-08-01, 2007-2009 -> 2007-01-01, 20080805 and 2008-08-05 as given.
+    2008-08-01, 2007-2009 -> 2007-01-01, 20080805 and 2008-08-05 as given;
+    an open range 2022- -> 2022-01-01.
     Slash dates are refused: 5/6/2010 could be 5 June or 6 May.
     """
 
@@ -108,7 +109,7 @@ def parse_date(value):
     if "/" in vv:
         return None, f"'{vv}' is ambiguous; use YYYY-MM-DD"
 
-    mm = re.fullmatch(r"(\d{4})", vv)
+    mm = re.fullmatch(r"(\d{4})-?", vv)  # a year, or an open range "2022-"
     if mm:
         return f"{mm[1]}-01-01", None
     mm = re.fullmatch(r"(\d{4})-(\d{4})", vv)
@@ -131,14 +132,24 @@ def parse_date(value):
     return candidate, None
 
 
+TEMPORAL_FORMS = "2020, 2020-10, 2008-2013 or 2022- (open)"
+
+
 def check_temporal(value):
+    """DC.COVERAGE_TEMPORAL: a year (2020), a month (2020-10), a range of
+    years (2008-2013) or an open range (2022-). Kept as typed."""
     vv = clean(value)
-    mm = re.fullmatch(r"(\d{4})(?:-(\d{4}))?", vv)
-    if not mm:
-        return f"'{vv}' should be a year or a range, e.g. 2020 or 2008-2013"
-    if mm[2] and mm[1] > mm[2]:
-        return f"'{vv}': the range ends before it starts"
-    return None
+    mm = re.fullmatch(r"(\d{4})(?:-(\d{2}))?", vv)
+    if mm:
+        if mm[2] and not 1 <= int(mm[2]) <= 12:
+            return f"'{vv}': {mm[2]} is not a month"
+        return None
+    mm = re.fullmatch(r"(\d{4})-(\d{4})?", vv)
+    if mm:
+        if mm[2] and mm[1] > mm[2]:
+            return f"'{vv}': the range ends before it starts"
+        return None
+    return f"'{vv}' should be {TEMPORAL_FORMS}"
 
 
 # ---------------------------------------------------------------------------
@@ -298,7 +309,7 @@ def build_record(register_path, accession_id, vocab):
                 continue
 
         elif iecode == "DC.RIGHTS_ACCESS":
-            level = vocab.rights_access.get(values[0].lower())
+            level = vocab.rights_level(values[0])
             if level is None:
                 allowed = ", ".join(lv for lv, _ in vocab.rights_access.values())
                 problems.append(f"DC.RIGHTS_ACCESS: '{values[0]}' is not a level. Allowed: {allowed}")

@@ -105,7 +105,7 @@ def test_register_value_beats_default(tmp_path, vocab):
 
 def test_rights_access_levels(tmp_path, vocab):
     for level, expected in [
-        ("Public", "Public."),
+        ("Public", "Public access permitted."),
         ("INTERNAL", "KAUST internal access only."),
         ("highly restricted",
          "Highly Restricted. Approval from KAUST Office of the President is required to access item."),
@@ -140,6 +140,35 @@ def test_date_rules(value, expected):
     assert am.parse_date(value) == (expected, None)
 
 
+@pytest.mark.parametrize("value,expected", [("2022-", "2022-01-01")])
+def test_open_date(value, expected):
+    assert am.parse_date(value) == (expected, None)
+
+
+@pytest.mark.parametrize("value", ["2020", "2020-10", "2008-2013", "2022-"])
+def test_temporal_forms(value):
+    assert am.check_temporal(value) is None
+
+
+@pytest.mark.parametrize("value", ["2020-13", "2013-2008", "2020s", "10/12/2012", "-2020"])
+def test_bad_temporal(value):
+    assert am.check_temporal(value)
+
+
+def test_rights_access_sentence_accepted(tmp_path, vocab):
+    """Rows copied from Libnova hold the sentence, not the level name."""
+    for given, expected in [
+        ("Public access permitted.", "Public access permitted."),
+        ("KAUST internal access only.", "KAUST internal access only."),
+        ("Restricted. Approval from Someone Else is required to access item.",
+         "Restricted. Approval from Test Office, Test Team is required to access item."),
+    ]:
+        row = dict(GOOD, **{"IECode: DC.RIGHTS_ACCESS": given})
+        reg = write_register(tmp_path / "reg.csv", [row])
+        rec = am.build_record(reg, "001_002_9999", vocab)
+        assert rec.fields["DC.RIGHTS_ACCESS"] == [expected]
+
+
 @pytest.mark.parametrize("value", ["5/27/2010", "2010-02-30", "2009-2007", "March 2010"])
 def test_bad_dates(value):
     date, error = am.parse_date(value)
@@ -168,7 +197,7 @@ def test_bad_rights_level_and_temporal(tmp_path, vocab):
         **{"IECode: DC.RIGHTS_ACCESS": "Secret", "IECode: DC.COVERAGE_TEMPORAL": "2020s"},
     )
     assert any("'Secret' is not a level" in pp for pp in problems)
-    assert any("should be a year or a range" in pp for pp in problems)
+    assert any("should be 2020, 2020-10, 2008-2013 or 2022- (open)" in pp for pp in problems)
 
 
 def test_missing_and_duplicate_rows(tmp_path, vocab):
@@ -328,3 +357,64 @@ def test_refresh_iana(tmp_path, monkeypatch):
     vv = Vocabulary(vdir)
     assert vv.is_registered("application/pdf") and vv.is_registered("text/plain")
     assert "Retrieved" in vv.iana_retrieved
+
+
+# -- Libnova refresh ---------------------------------------------------------------
+
+class FakeLibnova:
+    """Answers GET /objects/metadata/schema/descriptor/{id} like ls-kaust does."""
+    base_url = "https://example.invalid/api"
+    SCHEMA = {
+        96: ("DC.TYPE", ["Collection", "Dataset", "Event", "Image", "Interactive Resource",
+                         "Moving Image", "Physical Object", "Service", "Software", "Sound",
+                         "Still Image", "Text"]),
+        102: ("DC.LANGUAGE", ["en", "ar-SA", "fr", "zh-CN", "es", "pt", "id", "ur", "de"]),
+        177: ("accession", ["Correspondence", "KAUST event"]),
+        178: ("appraised", ["Yes", "No"]),
+    }
+
+    def call(self, method, path, body=None):
+        did = int(path.rsplit("/", 1)[1])
+        iecode, values = self.SCHEMA[did]
+        return {"success": True, "result": {"id": did, "iecode": iecode,
+                                            "enum_values": json.dumps(values)}}
+
+
+def old_vocabulary(tmp_path):
+    """A vocabulary folder with a fixed, outdated enums.json, so the test does
+    not depend on how up to date the repo's own vocabulary is."""
+    vdir = tmp_path / "vocabulary"
+    shutil.copytree(REPO / "vocabulary", vdir)
+    (vdir / "enums.json").write_text(json.dumps({
+        "DC.TYPE": {"descriptor_id": 96, "values": FakeLibnova.SCHEMA[96][1]},
+        "DC.LANGUAGE": {"descriptor_id": 102, "values": ["en", "ar-SA"]},
+        "appraised": {"descriptor_id": 178, "values": ["Yes", "No"]},
+        "accession": {"descriptor_id": 177, "values": ["Correspondence", "KAUST event", "KAUST gift"]},
+    }), encoding="utf-8")
+    return vdir
+
+
+def test_refresh_libnova(tmp_path, capsys):
+    import aavocab
+    vdir = old_vocabulary(tmp_path)
+
+    assert aavocab.refresh_libnova(vdir, check_only=True, client=FakeLibnova())
+    out = capsys.readouterr().out
+    assert "+ zh-CN" in out and "- KAUST gift" in out and "nothing written" in out
+    assert "zh-CN" not in (vdir / "enums.json").read_text(encoding="utf-8")
+
+    assert aavocab.refresh_libnova(vdir, client=FakeLibnova())
+    vv = Vocabulary(vdir)
+    assert vv.allowed("DC.LANGUAGE") == ["en", "ar-SA", "fr", "zh-CN", "es", "pt", "id", "ur", "de"]
+    assert vv.canonical("DC.LANGUAGE", "ZH-cn") == "zh-CN"
+    assert vv.allowed("DC.TYPE")[0] == "Collection"
+
+
+def test_refresh_libnova_wrong_descriptor(tmp_path, capsys):
+    import aavocab
+    vdir = old_vocabulary(tmp_path)
+    enums = json.loads((vdir / "enums.json").read_text(encoding="utf-8"))
+    enums["appraised"]["descriptor_id"] = 96          # points at DC.TYPE
+    (vdir / "enums.json").write_text(json.dumps(enums), encoding="utf-8")
+    assert not aavocab.refresh_libnova(vdir, client=FakeLibnova())
+    assert "Fix descriptor_id" in capsys.readouterr().out

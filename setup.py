@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='archiveautomation',
     version='0.7',
-    py_modules=['archiveautomation', 'aalib', 'aametadata', 'aavocab'],
+    py_modules=['archiveautomation', 'aalib', 'aametadata', 'aavocab', 'aalibnova'],
     install_requires=[
         'Click',
         'bagit',

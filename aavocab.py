@@ -13,6 +13,7 @@ import csv
 import datetime as DT
 import json
 import pathlib
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -84,6 +85,21 @@ class Vocabulary:
     def canonical(self, iecode, value):
         """Official spelling of 'value' for a controlled field, or None."""
         return self.enums[iecode].get(value.strip().lower())
+
+    # -- access levels -------------------------------------------------------
+    def rights_level(self, value):
+        """(level, sentence template) for a level name or its full sentence, or None.
+        'internal' and 'KAUST internal access only.' both give Internal; a
+        Restricted sentence matches with any approver in place of {DC.SOURCE}."""
+        vv = " ".join(value.split())
+        hit = self.rights_access.get(vv.lower())
+        if hit:
+            return hit
+        for level, template in self.rights_access.values():
+            pattern = re.escape(template).replace(re.escape("{DC.SOURCE}"), ".+")
+            if re.fullmatch(pattern, vv, flags=re.IGNORECASE):
+                return level, template
+        return None
 
     # -- media types ---------------------------------------------------------
     def is_registered(self, media_type):
@@ -165,6 +181,78 @@ def load_iana_snapshot_file(csv_file, top):
     return tmp
 
 
+def _enum_values(descriptor):
+    """Libnova returns enum_values as a JSON string ('["en","ar-SA"]') or a list."""
+    raw = descriptor.get("enum_values")
+    if isinstance(raw, str):
+        raw = json.loads(raw) if raw.strip() else []
+    return [str(vv) for vv in (raw or [])]
+
+
+def refresh_libnova(vocab_dir=DEFAULT_VOCAB_DIR, check_only=False, client=None):
+    """Update the allowed values in enums.json from Libnova's metadata schema
+    (GET /objects/metadata/schema/descriptor/{descriptor_id}). Shows what
+    changes; with check_only, writes nothing."""
+
+    from aalibnova import Libnova, LibnovaError, get_api_key
+
+    enums_file = pathlib.Path(vocab_dir) / "enums.json"
+    enums = _read_json(enums_file)
+    try:
+        client = client or Libnova(get_api_key())
+    except LibnovaError as ee:
+        print(ee)
+        return False
+
+    changed = False
+    for iecode, spec in enums.items():
+        if iecode.startswith("_"):
+            continue
+        did = spec.get("descriptor_id")
+        try:
+            desc = client.call("GET", f"/objects/metadata/schema/descriptor/{did}").get("result") or {}
+        except LibnovaError as ee:
+            print(f"  {iecode} (descriptor {did}): {ee}")
+            return False
+        if desc.get("iecode") != iecode:
+            print(f"  {iecode}: descriptor {did} is '{desc.get('iecode')}' in Libnova, "
+                  "not this field. Fix descriptor_id in enums.json; nothing written.")
+            return False
+        new = _enum_values(desc)
+        if not new:
+            print(f"  {iecode} (descriptor {did}): Libnova lists no values; kept as is")
+            continue
+        old = spec["values"]
+        added = [vv for vv in new if vv not in old]
+        removed = [vv for vv in old if vv not in new]
+        if added or removed:
+            changed = True
+            print(f"  {iecode} (descriptor {did}): {len(old)} -> {len(new)} values")
+            for vv in added:
+                print(f"      + {vv}")
+            for vv in removed:
+                print(f"      - {vv}   (not allowed in Libnova)")
+            spec["values"] = new
+        else:
+            print(f"  {iecode} (descriptor {did}): unchanged, {len(new)} values")
+
+    if not changed:
+        print("enums.json already matches Libnova.")
+        return True
+    if check_only:
+        print("--check: nothing written.")
+        return True
+    enums["_retrieved"] = (
+        f"Allowed values from {client.base_url}, "
+        f"{DT.datetime.now().strftime('%Y-%m-%d %H:%M')}"
+    )
+    with open(enums_file, "w", encoding="utf-8") as ff:
+        json.dump(enums, ff, ensure_ascii=False, indent=2)
+        ff.write("\n")
+    print(f"Saved {enums_file}")
+    return True
+
+
 def _show(vocab_dir=DEFAULT_VOCAB_DIR):
     vv = Vocabulary(vocab_dir)
     print(f"Vocabulary folder: {vv.dir}")
@@ -181,6 +269,8 @@ def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
     if argv[:1] == ["refresh-iana"]:
         return 0 if refresh_iana() else 1
+    if argv[:1] == ["refresh-libnova"]:
+        return 0 if refresh_libnova(check_only="--check" in argv[1:]) else 1
     if argv[:1] == ["show"]:
         try:
             _show()

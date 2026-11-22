@@ -1,1 +1,2 @@
-Not fetched yet. Run: archiveautomation-vocab refresh-iana
+IANA Media Types registry, https://www.iana.org/assignments/media-types
+Retrieved 2026-11-22 08:46: application (1830), audio (166), font (6), haptics (3), image (89), message (27), model (46), multipart (17), text (110), video (97)
