@@ -264,6 +264,46 @@ def av_check(av_config):
             return av_run_code, clamav_quarentine_file
 
 
+# clamscan skips files larger than --max-filesize and reports them as clean.
+# The limits are set explicitly (they are ClamAV's defaults) so the list of
+# skipped files written to the log matches what clamscan did.
+CLAMAV_MAX_FILESIZE = "100M"
+CLAMAV_MAX_SCANSIZE = "400M"
+CLAMAV_MAX_FILESIZE_BYTES = 100 * 1024 * 1024
+
+
+def files_over_clamav_limit(root, limit=CLAMAV_MAX_FILESIZE_BYTES):
+    """[(relative path, size in bytes)] of the files under root that clamscan skips."""
+    root = pathlib.Path(root)
+    big = []
+    for dirpath, _dirs, files in os.walk(root):
+        for name in files:
+            full = pathlib.Path(dirpath) / name
+            try:
+                size = full.stat().st_size
+            except OSError:
+                continue
+            if size > limit:
+                big.append((str(full.relative_to(root)), size))
+    return sorted(big)
+
+
+def note_unscanned_files(log_path, big_files, limit=CLAMAV_MAX_FILESIZE):
+    """Append the files clamscan skipped to its log, so the log doesn't read as
+    if every file was scanned."""
+    total = sum(size for _, size in big_files)
+    lines = [
+        "",
+        "----------- FILES NOT SCANNED -----------",
+        f"clamscan skips files larger than --max-filesize={limit} and counts them as clean.",
+        f"{len(big_files)} file(s), {total / 1024**3:.2f} GB, were not scanned:",
+    ]
+    lines += [f"  {path}  ({size / 1024**3:.2f} GB)" for path, size in big_files]
+    with open(log_path, "a", encoding="utf-8") as ff:
+        ff.write("\n".join(lines) + "\n")
+    return total
+
+
 def av_run(av_config):
     """Run the 'clamav' antivirus. The output is ClamAV log file, saved in 'av_logs_root' directory
     specified in the 'CLAMAV' session of the configuration file. If the ClamAV log file reports an
@@ -299,7 +339,10 @@ def av_run(av_config):
     docker_log_target = f"-v \"{av_config['av_logs_root']}:/logs\""
     clam_db = "--mount source=clam_db,target=/var/lib/clamav"
     clam_run = "clamav/clamav:latest clamscan /scandir"
-    clam_options = " --recursive=yes --verbose"
+    clam_options = (
+        f" --recursive=yes --verbose"
+        f" --max-filesize={CLAMAV_MAX_FILESIZE} --max-scansize={CLAMAV_MAX_SCANSIZE}"
+    )
     log_av = f"--log=/logs/{av_log_file}"
     av_check = f"{docker_run} {docker_target} {docker_log_target} {clam_db} {clam_run} {log_av} {clam_options}"
     logging.info(f"Antivirus check: {av_check}")
@@ -315,6 +358,16 @@ def av_run(av_config):
         print(av_log.decode("utf-8", errors="ignore")[-3000:])
         logging.critical(f"ClamAV scan failed (exit code {result.returncode}). Exiting...")
         sys.exit(1)
+
+    big_files = files_over_clamav_limit(av_config["av_location"])
+    if big_files:
+        log_path = pathlib.Path(av_config["av_logs_root"]) / av_log_file
+        total = note_unscanned_files(log_path, big_files)
+        logging.warning(
+            f"{len(big_files)} file(s) larger than {CLAMAV_MAX_FILESIZE}B "
+            f"({total / 1024**3:.2f} GB) were not scanned by ClamAV; "
+            f"they are listed at the end of {log_path}"
+        )
 
     logging.info(f"Checking for infected files")
     is_infected = check_infected(av_log.decode("utf-8", errors="ignore"))

@@ -105,6 +105,23 @@ class Vocabulary:
     def is_registered(self, media_type):
         return media_type.strip().lower() in self.media_types
 
+    def registered_form(self, media_type):
+        """The registered media type for a DROID MIME type, or None.
+
+        Some formats were registered with IANA after a long life under an
+        unregistered 'x-' name, which DROID still reports (video/x-matroska,
+        registered as video/matroska by RFC 9559). If the type itself isn't
+        registered but the same type without 'x-' is, that one is used."""
+        mt = media_type.strip().lower()
+        if mt in self.media_types:
+            return mt
+        top, _, sub = mt.partition("/")
+        if sub.startswith("x-"):
+            plain = f"{top}/{sub[2:]}"
+            if plain in self.media_types:
+                return plain
+        return None
+
     def kind_of(self, media_type):
         mt = media_type.strip().lower()
         for kind in self.file_kinds:

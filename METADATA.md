@@ -53,7 +53,9 @@ appraised from Libnova's metadata schema (`descriptor_id` in `enums.json`) and n
 
 Run `refresh-iana` once after installing, then now and then. A file DROID can't
 identify, or whose media type isn't registered, gets `application/octet-stream`
-and is listed in the run output for review.
+and is listed in the run output for review. A deprecated `x-` name whose plain
+form is registered is written in the registered form, e.g. `video/x-matroska`
+→ `video/matroska` (RFC 9559).
 
 ### From PowerShell (physical-archives scripts)
 

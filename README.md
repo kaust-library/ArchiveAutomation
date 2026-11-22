@@ -142,6 +142,11 @@ Metadata for accession 013_001_0015 needs fixing (register\accession_register.cs
   errors; read the output.
 - A file DROID can't identify, or one with an unregistered media type, is
   recorded as `application/octet-stream`, and the run lists those files for review.
+  An unregistered `x-` type whose plain form is registered is recorded in the
+  registered form (DROID's `video/x-matroska` becomes `video/matroska`).
+- ClamAV skips files larger than 100 MB (`--max-filesize`) and counts them as
+  clean. The run lists those files at the end of the ClamAV log, under
+  `FILES NOT SCANNED`, and says how many there were.
 
 ## Development
 

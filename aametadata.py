@@ -393,7 +393,9 @@ def formats_from_droid(droid_csv, vocab):
         candidates = []
         for ii in i_mimes:
             candidates += [mm.strip() for mm in cell(rr, ii).split(",") if mm.strip()]
-        chosen = next((mm.lower() for mm in candidates if vocab.is_registered(mm)), None)
+        chosen = next(
+            (reg for reg in (vocab.registered_form(mm) for mm in candidates) if reg), None
+        )
         if chosen is None:
             chosen = FALLBACK_MEDIA_TYPE
             reported = ", ".join(candidates) if candidates else "not identified"

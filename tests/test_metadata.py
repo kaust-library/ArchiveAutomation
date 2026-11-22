@@ -418,3 +418,38 @@ def test_refresh_libnova_wrong_descriptor(tmp_path, capsys):
     (vdir / "enums.json").write_text(json.dumps(enums), encoding="utf-8")
     assert not aavocab.refresh_libnova(vdir, client=FakeLibnova())
     assert "Fix descriptor_id" in capsys.readouterr().out
+
+
+# -- 'x-' MIME types and ClamAV's size limit ---------------------------------
+
+def test_x_mime_type_uses_registered_form(tmp_path, vocab):
+    """DROID reports MKV as video/x-matroska; IANA registered video/matroska."""
+    files = [("v.mkv", 19_000_000_000, "mkv", "video/x-matroska"),
+             ("b.foo", 20, "foo", "application/x-foo")]   # no registered form: fallback
+    types, extent, fallback = am.formats_from_droid(droid_csv(tmp_path / "d.csv", files), vocab)
+    assert types == ["application/octet-stream", "video/matroska"]
+    assert "1 video file(.mkv)" in extent
+    assert len(fallback) == 1 and "application/x-foo" in fallback[0]
+
+
+def test_registered_form(vocab):
+    assert vocab.registered_form("video/x-matroska") == "video/matroska"
+    assert vocab.registered_form("Video/MP4") == "video/mp4"
+    assert vocab.registered_form("application/x-foo") is None
+
+
+def test_files_over_clamav_limit_noted_in_log(tmp_path):
+    src = tmp_path / "src"
+    (src / "sub").mkdir(parents=True)
+    (src / "small.txt").write_bytes(b"x" * 10)
+    with open(src / "sub" / "big.mkv", "wb") as ff:   # sparse: no real 101 MB written
+        ff.truncate(aalib.CLAMAV_MAX_FILESIZE_BYTES + 1)
+    big = aalib.files_over_clamav_limit(src)
+    assert big == [(str(pathlib.Path("sub") / "big.mkv"), aalib.CLAMAV_MAX_FILESIZE_BYTES + 1)]
+
+    log = tmp_path / "clamAVlog.txt"
+    log.write_text("----------- SCAN SUMMARY -----------\nInfected files: 0\n", encoding="utf-8")
+    aalib.note_unscanned_files(log, big)
+    text = log.read_text(encoding="utf-8")
+    assert text.startswith("----------- SCAN SUMMARY")   # ClamAV's own lines kept
+    assert "FILES NOT SCANNED" in text and "big.mkv" in text and "--max-filesize=100M" in text
