@@ -55,6 +55,20 @@ Run `refresh-iana` once after installing, then now and then. A file DROID can't
 identify, or whose media type isn't registered, gets `application/octet-stream`
 and is listed in the run output for review.
 
+### From PowerShell (physical-archives scripts)
+
+`powershell\AAVocabulary.ps1` gives PowerShell scripts the same lists:
+
+```powershell
+. "C:\Tools\ArchiveAutomation\powershell\AAVocabulary.ps1"
+$enumFix = Get-AAEnumFix                       # same shape as the old hand-written table
+Repair-AAEnumValue -IECode "DC.LANGUAGE" -Value "EN | ar-sa" -EnumFix $enumFix   # -> en, ar-SA
+Get-AARightsAccess -Level "Restricted" -Source "Office of the Provost"
+```
+
+`Repair-AAEnumValue` splits on `|` first, then corrects each value, and warns
+about values Libnova would refuse. Test: `powershell -ExecutionPolicy Bypass -File tests\test_vocabulary.ps1`.
+
 ## Files written into the bag
 
 | File | Contents |
